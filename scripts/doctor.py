@@ -2,6 +2,9 @@
 import argparse
 import ipaddress
 import json
+import grp
+import pwd
+import shlex
 import os
 from pathlib import Path
 import platform
@@ -16,9 +19,13 @@ INSTALL = 'sudo apt-get install qemu-kvm libvirt-daemon-system libvirt-clients v
 
 def command(args):
     try:
+        if args[0] == 'virsh':
+            group = grp.getgrnam('libvirt')
+            if group.gr_gid not in os.getgroups() and group.gr_gid != os.getgid() and pwd.getpwuid(os.getuid()).pw_name in group.gr_mem:
+                args = ['sg', 'libvirt', '-c', shlex.join(args)]
         result = subprocess.run(args, capture_output=True, text=True, timeout=10)
         return result.returncode, result.stdout.strip(), result.stderr.strip()
-    except (OSError, subprocess.TimeoutExpired) as exc:
+    except (OSError, KeyError, subprocess.TimeoutExpired) as exc:
         return 2, '', str(exc)
 
 
@@ -84,7 +91,7 @@ def inspect():
     if network_ok:
         code, output, error = command(['virsh', '-c', 'qemu:///system', 'net-list', '--all', '--name'])
         network_ok = code == 0
-        for name in output.splitlines() if code == 0 else []:
+        for name in filter(None, output.splitlines()) if code == 0 else []:
             code, xml, error = command(['virsh', '-c', 'qemu:///system', 'net-dumpxml', name])
             if code:
                 network_ok = False
@@ -101,7 +108,7 @@ def inspect():
         except ValueError as exc:
             add('subnet-candidate', False, str(exc), 'Supply a conflict-free subnet')
     return dict(schema_version=1, status='blocked' if any(c['status'] == 'blocked' for c in checks) else 'ready', checks=checks,
-                limitations=['Docker APIs deliberately not queried to isolate DevOps Lab. Before creation, supply any inactive/custom Docker network subnets.', 'No guests, networks, keys or cloud resources are created by doctor.'])
+                limitations=['Lifecycle checks Docker network IPAM only, as authorized; doctor does not query container or credential data.', 'No guests, networks, keys or cloud resources are created by doctor.'])
 
 
 def main():

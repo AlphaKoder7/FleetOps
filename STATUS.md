@@ -1,6 +1,6 @@
 # FleetOps status
 
-Updated: 2026-10-04. Specification: FLEETOPS_PLAN.md.
+Updated: 2026-10-05. Specification: FLEETOPS_PLAN.md.
 
 ## Completed
 - Phase 0 acceptance gate passed: inspected existing directory, scaffolded repository, created AGENTS.md, README, Makefile, isolated .venv and dependency lock. Doctor truthfully reports prerequisites; it need not report READY to satisfy this inspection gate.
@@ -9,28 +9,19 @@ Updated: 2026-10-04. Specification: FLEETOPS_PLAN.md.
 - Installed ansible-core 2.20.9 and ansible-lint 26.9.0 only in .venv; requirements-dev.lock.txt records resolved versions. Official Ansible support matrix confirms Python 3.12 controller compatibility.
 - Raw host preflight: ignored `.runtime/doctor-host.json`; sanitized summary: evidence/phase0.md.
 
-## Active phase / blocker
-Phase 1 pending. Host lacks virsh, qemu-img, virt-install and cloud-localds. libvirt connection/network inspection cannot pass until installed. No subnet selected; no network/image/key/guest has been created. All later local acceptance gates and cloud validation remain PENDING. Operational Make targets fail with exit 2 until implemented.
+## Phase 1 verified
+Three real Ubuntu 24.04 KVM guests completed cloud-init and pinned-key SSH readiness. Ansible ping passed for all three before and after a graceful down/up. A second up preserved domain UUIDs and disks without defining new guests. Dedicated subnet: 192.168.150.0/24. Ownership manifest: .runtime/fleet.json. Eight portable tests pass. Clean destroy/rebuild remains a final-delivery check.
 
-User action in a host terminal:
-```sh
-sudo apt-get update
-sudo apt-get install qemu-kvm libvirt-daemon-system libvirt-clients virtinst cloud-image-utils cpu-checker python3-venv
-sudo usermod -aG libvirt,kvm "$USER"
-```
-Log out/in, then:
-```sh
-cd ~/Projects/FleetOps
-kvm-ok
-virsh -c qemu:///system uri
-make doctor
-```
-If libvirt does not connect, investigate socket activation rather than globally restarting services. Never supply a password in chat.
+## Phase 2 verified
+Baseline, non-root systemd application and HAProxy roles configured successfully. Direct readiness/identity and HAProxy distribution checks passed. Real Ansible reboot of fleetops-web-1 changed its boot ID and workload recovered. Second configuration recap: changed=0 / failed=0 / unreachable=0 for all three guests (raw .runtime/configure-second.log; no apt metadata refresh in this assertion). Ansible lint production profile passed; 11 portable tests pass.
+
+## Active phase
+Phase 3: read-only managed-state reporting and targeted repair. Three guests are running and healthy. Rolling maintenance/drill/CI/release gates remain pending. AWS provisioning disabled.
 
 ## Next action
-After prerequisites pass, implement and verify Phase 1 lifecycle against real guests, including exact ownership records, conflict-checked network, checksum-verified image, project SSH trust, readiness timeouts and repeatability. Before creation, account for inactive/custom Docker network subnets through operator-supplied data; do not inspect DevOps Lab containers or credentials.
+Implement per-host/aggregate drift reports, demonstrate modified application settings plus stopped service without detection mutation, repair, then verify a clean report. Lifecycle clean teardown/rebuild still pending final delivery.
 
 ## Limitations / isolation
 - Restricted sandbox hides KVM/netlink/system service information; host verification was separately authorized. Sandbox failures are not host absence evidence.
-- No FleetOps VMs are running or have been created. No AWS resources provisioned, credentials read, external publication or Git push. DevOps Lab untouched.
+- Three FleetOps guests have started; guest service configuration is pending. No AWS resources provisioned, credentials read, external publication or Git push. DevOps Lab untouched.
 - Empty app/role/playbook directories reserve future structure; they are not implemented deliverables. CI currently runs portable doctor tests only.

@@ -1,0 +1,40 @@
+---
+- name: Create non-login workload user
+  ansible.builtin.user:
+    name: fleetops-app
+    system: true
+    shell: /usr/sbin/nologin
+    create_home: false
+- name: Install workload script
+  ansible.builtin.copy:
+    src: "{{ playbook_dir }}/../../app/server.py"
+    dest: /opt/fleetops/server.py
+    owner: root
+    group: root
+    mode: '0644'
+  notify: Restart fleetops application
+- name: Validate and install application settings
+  ansible.builtin.template:
+    src: application.json.j2
+    dest: /etc/fleetops/application.json
+    owner: root
+    group: root
+    mode: '0644'
+    validate: /usr/bin/python3 /opt/fleetops/server.py --validate %s
+  notify: Restart fleetops application
+- name: Install workload service
+  ansible.builtin.template:
+    src: fleetops-app.service.j2
+    dest: /etc/systemd/system/fleetops-app.service
+    owner: root
+    group: root
+    mode: '0644'
+  notify: Restart fleetops application
+- name: Enable and start workload
+  ansible.builtin.systemd_service:
+    name: fleetops-app
+    state: started
+    enabled: true
+    daemon_reload: true
+- name: Activate pending validated workload changes
+  ansible.builtin.meta: flush_handlers

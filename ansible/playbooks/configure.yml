@@ -1,0 +1,26 @@
+---
+- name: Configure only the FleetOps guests
+  hosts: all
+  become: true
+  pre_tasks:
+    - name: Reject non-FleetOps or unsupported managed hosts
+      ansible.builtin.assert:
+        that:
+          - inventory_hostname in ['fleetops-lb', 'fleetops-web-1', 'fleetops-web-2']
+          - ansible_connection | default('ssh') == 'ssh'
+          - ansible_facts['distribution'] == 'Ubuntu'
+          - ansible_facts['distribution_version'] == '24.04'
+  roles:
+    - baseline
+- name: Configure application nodes
+  hosts: application_nodes
+  gather_facts: false
+  become: true
+  roles:
+    - application
+- name: Configure load balancer
+  hosts: load_balancers
+  gather_facts: false
+  become: true
+  roles:
+    - load_balancer

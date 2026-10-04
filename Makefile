@@ -10,6 +10,12 @@ doctor:
 test:
 	$(PYTHON) -m unittest discover -s tests -v
 
-up configure verify drift-check repair maintain demo integration down destroy:
+up down destroy:
+	$(PYTHON) scripts/local.py $@ $(LOCAL_ARGS)
+
+configure verify:
+	$(PYTHON) scripts/ops.py $@
+
+drift-check repair maintain demo integration:
 	@echo "$@ is pending implementation; see STATUS.md. No resources changed." >&2
 	@exit 2

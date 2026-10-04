@@ -1,0 +1,6 @@
+---
+- name: Restart fleetops application
+  ansible.builtin.systemd_service:
+    name: fleetops-app
+    state: restarted
+    daemon_reload: true

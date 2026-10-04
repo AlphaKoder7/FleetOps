@@ -1,0 +1,26 @@
+global
+    log /dev/log local0
+    user haproxy
+    group haproxy
+    daemon
+    stats socket /run/haproxy/fleetops-admin.sock mode 600 level admin
+
+defaults
+    log global
+    mode http
+    option httplog
+    timeout connect 2s
+    timeout client 10s
+    timeout server 10s
+
+frontend fleetops_http
+    bind {{ ansible_host }}:18080
+    default_backend fleetops_apps
+
+backend fleetops_apps
+    balance roundrobin
+    option httpchk GET /health
+    http-check expect status 200
+{% for name in groups['application_nodes'] | sort %}
+    server {{ name }} {{ hostvars[name]['ansible_host'] }}:18081 check inter 1s fall 2 rise 2
+{% endfor %}

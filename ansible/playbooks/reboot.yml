@@ -1,0 +1,17 @@
+---
+- name: Exercise real guest reboot and service recovery
+  hosts: fleetops-web-1
+  gather_facts: false
+  become: true
+  tasks:
+    - name: Reboot this FleetOps guest and require a changed boot ID
+      ansible.builtin.reboot:
+        reboot_timeout: 180
+    - name: Require workload readiness after reboot
+      ansible.builtin.uri:
+        url: "http://{{ ansible_host }}:18081/health"
+        return_content: true
+      register: reboot_health
+      until: reboot_health.status == 200
+      retries: 30
+      delay: 1

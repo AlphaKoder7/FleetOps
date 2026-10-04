@@ -1,0 +1,32 @@
+---
+- name: Verify each application directly
+  hosts: application_nodes
+  gather_facts: false
+  tasks:
+    - name: Require readiness and correct node identity
+      ansible.builtin.uri:
+        url: "http://{{ ansible_host }}:18081/health"
+        return_content: true
+      register: verify_direct
+      until: verify_direct.status == 200
+      retries: 20
+      delay: 1
+    - name: Assert direct application identity
+      ansible.builtin.assert:
+        that:
+          - verify_direct.json.node == inventory_hostname
+          - verify_direct.json.ready
+- name: Verify HAProxy distribution
+  hosts: load_balancers
+  gather_facts: false
+  tasks:
+    - name: Sample requests through HAProxy
+      ansible.builtin.uri:
+        url: "http://{{ ansible_host }}:18080/"
+        return_content: true
+      loop: "{{ range(0, 10) | list }}"
+      register: verify_balanced
+    - name: Require both application identities
+      ansible.builtin.assert:
+        that:
+          - verify_balanced.results | map(attribute='json.node') | unique | sort == groups['application_nodes'] | sort

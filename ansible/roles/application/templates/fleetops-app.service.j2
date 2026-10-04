@@ -1,0 +1,20 @@
+[Unit]
+Description=FleetOps stateless demonstration application
+After=network-online.target
+Wants=network-online.target
+
+[Service]
+User=fleetops-app
+Group=fleetops-app
+ExecStart=/usr/bin/python3 /opt/fleetops/server.py --config /etc/fleetops/application.json
+Restart=on-failure
+RestartSec=2
+NoNewPrivileges=true
+PrivateTmp=true
+ProtectSystem=strict
+ProtectHome=true
+StandardOutput=journal
+StandardError=journal
+
+[Install]
+WantedBy=multi-user.target
