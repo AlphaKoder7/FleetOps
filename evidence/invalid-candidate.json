@@ -1,0 +1,39 @@
+{
+  "kind": "invalid-candidate",
+  "started_at": "2026-10-04T18:57:38.067194+00:00",
+  "exit_status": 2,
+  "before": {
+    "file": {
+      "checksum": "5df57a04b3bfde5c9b694db0e53b43d607d29bc2c34b0d1f8e02fd8a76df1218",
+      "mode": "0644",
+      "mtime": 1791138476.0630527
+    },
+    "service": [
+      "MainPID=6298",
+      "NRestarts=0",
+      "ActiveState=active",
+      "UnitFileState=enabled"
+    ]
+  },
+  "after": {
+    "file": {
+      "checksum": "5df57a04b3bfde5c9b694db0e53b43d607d29bc2c34b0d1f8e02fd8a76df1218",
+      "mode": "0644",
+      "mtime": 1791138476.0630527
+    },
+    "service": [
+      "MainPID=6298",
+      "NRestarts=0",
+      "ActiveState=active",
+      "UnitFileState=enabled"
+    ]
+  },
+  "rejection_preserved_active_state": true,
+  "verified_at": "2026-10-04T18:58:38.199728+00:00",
+  "final_status": "healthy-clean",
+  "validation": {
+    "validator_exit_status": 1,
+    "message": "failed to validate",
+    "stderr": "[NOTICE]   (66675) : haproxy version is 2.8.16-0ubuntu0.24.04.3\n[NOTICE]   (66675) : path to executable is /usr/sbin/haproxy\n[ALERT]    (66675) : config : parsing [<candidate>:1]: unknown keyword 'this' out of section.\n[ALERT]    (66675) : config : Error(s) found in configuration file : <candidate>\n[ALERT]    (66675) : config : Fatal errors found in configuration.\n"
+  }
+}

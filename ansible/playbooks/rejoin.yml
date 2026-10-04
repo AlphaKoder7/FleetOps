@@ -1,0 +1,23 @@
+---
+- name: Explicitly rejoin only directly healthy FleetOps backends
+  hosts: load_balancers
+  gather_facts: false
+  become: true
+  tasks:
+    - name: Require each direct application identity before any rejoin
+      ansible.builtin.uri:
+        url: "http://{{ hostvars[item]['ansible_host'] }}:18081/health"
+        return_content: true
+      loop: "{{ groups['application_nodes'] | sort }}"
+      register: rejoin_direct
+      failed_when: rejoin_direct.status != 200 or rejoin_direct.json.node != item
+    - name: Rejoin directly verified backends
+      ansible.builtin.command:
+        argv: [python3, /opt/fleetops/lbctl.py, enable, "{{ item }}"]
+      loop: "{{ groups['application_nodes'] | sort }}"
+      changed_when: true
+    - name: Require backend health checks UP
+      ansible.builtin.command:
+        argv: [python3, /opt/fleetops/lbctl.py, wait-up, "{{ item }}"]
+      loop: "{{ groups['application_nodes'] | sort }}"
+      changed_when: false

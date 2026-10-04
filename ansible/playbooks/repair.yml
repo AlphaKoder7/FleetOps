@@ -1,0 +1,5 @@
+---
+- name: Restore the explicit FleetOps configuration
+  ansible.builtin.import_playbook: configure.yml
+- name: Require recovered health
+  ansible.builtin.import_playbook: verify.yml

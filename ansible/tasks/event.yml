@@ -1,0 +1,14 @@
+---
+- name: Record measured controller event boundary
+  ansible.builtin.copy:
+    content: >-
+      {{ {'node': inventory_hostname, 'stage': maintain_stage,
+          'at': now(utc=true, fmt='%Y-%m-%dT%H:%M:%SZ'),
+          'packages': maintain_packages,
+          'rebooted': maintain_reboot.rebooted | default(false),
+          'before': maintain_before.stdout_lines | default([]),
+          'after': maintain_after.stdout_lines | default([])} | to_nice_json }}
+    dest: "{{ playbook_dir }}/../../.runtime/maintenance/{{ inventory_hostname }}-{{ maintain_stage }}.json"
+    mode: '0600'
+  delegate_to: localhost
+  become: false

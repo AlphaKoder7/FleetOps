@@ -1,0 +1,29 @@
+---
+- name: Observe active load-balancer state before and after invalid candidate
+  hosts: load_balancers
+  gather_facts: false
+  become: true
+  tasks:
+    - name: Validate snapshot label
+      ansible.builtin.assert:
+        that: snapshot_label in ['before', 'after']
+    - name: Read active configuration hash and metadata
+      ansible.builtin.stat:
+        path: /etc/haproxy/haproxy.cfg
+        checksum_algorithm: sha256
+      register: snapshot_lb_file
+    - name: Read active service and process identity
+      ansible.builtin.command:
+        argv: [systemctl, show, haproxy, -p, ActiveState, -p, MainPID, -p, NRestarts, -p, UnitFileState]
+      register: snapshot_lb_service
+      changed_when: false
+    - name: Save selected observations on the controller
+      ansible.builtin.copy:
+        content: >-
+          {{ {'file': {'checksum': snapshot_lb_file.stat.checksum,
+                      'mode': snapshot_lb_file.stat.mode, 'mtime': snapshot_lb_file.stat.mtime},
+              'service': snapshot_lb_service.stdout_lines} | to_nice_json }}
+        dest: "{{ playbook_dir }}/../../.runtime/snapshots/{{ snapshot_label }}-fleetops-lb.json"
+        mode: '0600'
+      delegate_to: localhost
+      become: false

@@ -1,6 +1,6 @@
 # FleetOps local lifecycle
 
-`make up LOCAL_ARGS=--docker-subnets-reviewed` checks host routes, all libvirt network ranges and Docker **network IPAM only**, then selects an unused /24. Docker inspection was explicitly authorized by the owner; no containers are queried. Future operators must authorize that same narrowly scoped inspection. The flag records review, not a substitute for the actual IPAM checks.
+`make up` checks host routes, all libvirt network ranges and Docker **network IPAM only**, then selects an unused /24. Docker inspection was explicitly authorized by the owner; no containers are queried. Only read-only local Docker network names/IPAM inspection is allowed; no container or credential inspection.
 
 Three Ubuntu 24.04 KVM guests use 1 vCPU, 1 GiB and an 8 GiB qcow2 overlay each. The official HTTPS image is SHA256-verified. All volumes live in a dedicated `fleetops-<ownership UUID>` libvirt pool under `/var/lib/libvirt/images`. libvirt creates that project-owned storage through its API; no host sudo or global service restart is needed. Cached downloads and seed/SSH material live in ignored `.runtime` (700; private keys 600).
 

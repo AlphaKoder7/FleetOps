@@ -1,27 +1,33 @@
 # FleetOps status
 
-Updated: 2026-10-05. Specification: FLEETOPS_PLAN.md.
+Updated: 2026-10-05 (Asia/Kolkata). Read FLEETOPS_PLAN.md and AGENTS.md before resuming.
 
-## Completed
-- Phase 0 acceptance gate passed: inspected existing directory, scaffolded repository, created AGENTS.md, README, Makefile, isolated .venv and dependency lock. Doctor truthfully reports prerequisites; it need not report READY to satisfy this inspection gate.
-- `make test`: five portable tests passed (subnet overlap/exhaustion/IPv6, memory parsing, missing-command handling). No VM integration tests have run.
-- Real host doctor (`.venv/bin/python scripts/doctor.py --json`): exit 2 as expected. Pop!_OS 24.04, Python 3.12.3, KVM read/write access, approximately 9.5 GiB available RAM / 39.9 GiB free disk; route and TCP listener inspections passed. No 18080/18081 host listeners.
-- Installed ansible-core 2.20.9 and ansible-lint 26.9.0 only in .venv; requirements-dev.lock.txt records resolved versions. Official Ansible support matrix confirms Python 3.12 controller compatibility.
-- Raw host preflight: ignored `.runtime/doctor-host.json`; sanitized summary: evidence/phase0.md.
+## Verified local phases
 
-## Phase 1 verified
-Three real Ubuntu 24.04 KVM guests completed cloud-init and pinned-key SSH readiness. Ansible ping passed for all three before and after a graceful down/up. A second up preserved domain UUIDs and disks without defining new guests. Dedicated subnet: 192.168.150.0/24. Ownership manifest: .runtime/fleet.json. Eight portable tests pass. Clean destroy/rebuild remains a final-delivery check.
+| Phase | Actual acceptance results |
+| --- | --- |
+| 0 | Scaffold and read-only doctor; current host doctor returns 0. Pop!_OS 24.04 / Python 3.12.3 / KVM/libvirt; final inspection ~6.3 GiB available RAM, 36.4 GiB free disk. |
+| 1 | Three real Ubuntu 24.04 guests, official SHA256-verified image, conflict-checked dedicated NAT/pool, pinned SSH/cloud-init/Ansible readiness. Repeated up preserves UUIDs/disks; graceful down/up passed. Exact teardown verified old resources absent; clean rebuild has new domain/network/pool UUIDs. |
+| 2 | Baseline, non-root systemd workload and HAProxy roles; validated candidates, restricted guest ingress, direct/LB identity, actual non-root process UID and root-owned 0600 administration socket verified. Real guest reboot recovery passed. Final configuration changed=0 / failed=0 / unreachable=0 on all three. |
+| 3 | Modified node 1 setting plus stopped node 2 service detected (exit 1). Before/after file/service snapshots matched: detection did not repair. Separate repair/health verification succeeded; clean check returned 0. |
+| 4 | Serial forced reboot of both app guests; node 1 rejoined before node 2 began. Selected python3-minimal version remained 3.12.3-0ubuntu2.1, so no update claimed. Deliberate first-node health failure returned 2, left it MAINT, and preserved node 2 boot/config/package/service/apt-metadata fingerprints with no node 2 maintenance events. Explicit demo recovery passed. |
+| 5 | Invalid HAProxy candidate: validator exit 1 / wrapper exit 2 / changed=false; active file hash/mode/mtime and MainPID/service unchanged. Real drift/rolling/abort/rejection observations preserved; final fleet healthy/clean. |
+| 6 | 24 portable tests pass; Python format, Ansible lint production profile, all playbook syntax checks, workflow YAML and dependency consistency pass locally. Real rebuilt-fleet integration passes. Check/diff simulation returns 0 with zero predicted changes. Runbook and two observed simulated incident reports complete. |
 
-## Phase 2 verified
-Baseline, non-root systemd application and HAProxy roles configured successfully. Direct readiness/identity and HAProxy distribution checks passed. Real Ansible reboot of fleetops-web-1 changed its boot ID and workload recovered. Second configuration recap: changed=0 / failed=0 / unreachable=0 for all three guests (raw .runtime/configure-second.log; no apt metadata refresh in this assertion). Ansible lint production profile passed; 11 portable tests pass.
+Measured rolling reboot: 511 requests / 0 observed failures / p95 3.22 ms in the recorded ~102 s window. Node maintenance/recovery: 45/21 s and 43/20 s. Abort/recovery: 818 requests / 0 observed failures / p95 5.35 ms in ~163 s. Short sampled lab windows do not guarantee zero downtime under arbitrary conditions.
 
-## Active phase
-Phase 3: read-only managed-state reporting and targeted repair. Three guests are running and healthy. Rolling maintenance/drill/CI/release gates remain pending. AWS provisioning disabled.
+## Runtime and artifacts
 
-## Next action
-Implement per-host/aggregate drift reports, demonstrate modified application settings plus stopped service without detection mutation, repair, then verify a clean report. Lifecycle clean teardown/rebuild still pending final delivery.
+- Current rebuilt guests: fleetops-lb, fleetops-web-1 and fleetops-web-2 running on fleetops-net (192.168.150.0/24). Addresses/SSH trust are discovered/generated, not source-code constants.
+- Ownership and exact UUIDs: ignored `.runtime/fleet.json`; dedicated UUID-named pool under `/var/lib/libvirt/images`. Keep the manifest until successful teardown. `.runtime` is private; keys are untracked with mode 600.
+- Evidence: `evidence/{drift-drill,invalid-candidate,maintenance-reboot,maintenance-abort,rebuild,local-integration,check-diff,final-drift}.json`; raw requests in corresponding maintenance `.jsonl`. Raw command logs/snapshots stay in ignored `.runtime`.
+- Docs: README.md, docs/runbook.md, docs/managed-state.md, docs/maintenance.md, docs/probing.md, docs/validation.md and docs/incidents/*.md.
+- Dependencies: .venv only; ansible-core 2.20.9 / ansible-lint 26.9.0; exact resolved pins in requirements-dev.lock.txt.
 
-## Limitations / isolation
-- Restricted sandbox hides KVM/netlink/system service information; host verification was separately authorized. Sandbox failures are not host absence evidence.
-- Three FleetOps guests have started; guest service configuration is pending. No AWS resources provisioned, credentials read, external publication or Git push. DevOps Lab untouched.
-- Empty app/role/playbook directories reserve future structure; they are not implemented deliverables. CI currently runs portable doctor tests only.
+## Next action and limitations
+
+No local prerequisite/user-action blocker. Next command: `make verify`; use `make down` to conserve RAM while preserving disks. `make integration` expects an already configured healthy fleet; `make demo` reruns real guest drills and restores health.
+
+Phase 7 AWS preparation and cloud validation remain PENDING. No AWS resources provisioned, existing cloud credentials read, external publishing or Git push. Hosted CI workflow is prepared but has not run remotely; local equivalents passed. DevOps Lab untouched except the explicitly authorized read-only Docker network names/IPAM ranges; no containers/labels/credentials inspected and no existing network modified.
+
+The existing session has stale supplemental groups; wrappers activate the already configured libvirt group via sg. Restricted sandboxes hide host sockets/devices/routes; host gates were run with authorized host access. Guest SSH transport/trust is explicit and unrelated user SSH profiles are ignored. Drift coverage is bounded; concurrent operations are unsupported, host/LB are single points of failure, long-lived request drain is unproven, and there is no automatic package/OS rollback. Local release is complete; cloud deployment/recovery/cost evidence remains pending a separately initiated run.

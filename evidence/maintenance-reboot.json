@@ -1,0 +1,247 @@
+{
+  "kind": "maintenance-reboot",
+  "started_at": "2026-10-04T18:50:08.305053+00:00",
+  "events": [
+    {
+      "after": [],
+      "at": "2026-10-04T18:50:47Z",
+      "before": [],
+      "node": "fleetops-web-1",
+      "packages": [
+        "python3-minimal"
+      ],
+      "rebooted": false,
+      "stage": "drained"
+    },
+    {
+      "after": [
+        "python3-minimal=3.12.3-0ubuntu2.1"
+      ],
+      "at": "2026-10-04T18:50:58Z",
+      "before": [
+        "python3-minimal=3.12.3-0ubuntu2.1"
+      ],
+      "node": "fleetops-web-1",
+      "packages": [
+        "python3-minimal"
+      ],
+      "rebooted": false,
+      "stage": "patched"
+    },
+    {
+      "after": [
+        "python3-minimal=3.12.3-0ubuntu2.1"
+      ],
+      "at": "2026-10-04T18:51:22Z",
+      "before": [
+        "python3-minimal=3.12.3-0ubuntu2.1"
+      ],
+      "node": "fleetops-web-1",
+      "packages": [
+        "python3-minimal"
+      ],
+      "rebooted": true,
+      "stage": "ready"
+    },
+    {
+      "after": [
+        "python3-minimal=3.12.3-0ubuntu2.1"
+      ],
+      "at": "2026-10-04T18:51:01Z",
+      "before": [
+        "python3-minimal=3.12.3-0ubuntu2.1"
+      ],
+      "node": "fleetops-web-1",
+      "packages": [
+        "python3-minimal"
+      ],
+      "rebooted": false,
+      "stage": "recovery-started"
+    },
+    {
+      "after": [
+        "python3-minimal=3.12.3-0ubuntu2.1"
+      ],
+      "at": "2026-10-04T18:51:27Z",
+      "before": [
+        "python3-minimal=3.12.3-0ubuntu2.1"
+      ],
+      "node": "fleetops-web-1",
+      "packages": [
+        "python3-minimal"
+      ],
+      "rebooted": true,
+      "stage": "rejoined"
+    },
+    {
+      "after": [],
+      "at": "2026-10-04T18:50:42Z",
+      "before": [],
+      "node": "fleetops-web-1",
+      "packages": [
+        "python3-minimal"
+      ],
+      "rebooted": false,
+      "stage": "started"
+    },
+    {
+      "after": [],
+      "at": "2026-10-04T18:51:34Z",
+      "before": [],
+      "node": "fleetops-web-2",
+      "packages": [
+        "python3-minimal"
+      ],
+      "rebooted": false,
+      "stage": "drained"
+    },
+    {
+      "after": [
+        "python3-minimal=3.12.3-0ubuntu2.1"
+      ],
+      "at": "2026-10-04T18:51:46Z",
+      "before": [
+        "python3-minimal=3.12.3-0ubuntu2.1"
+      ],
+      "node": "fleetops-web-2",
+      "packages": [
+        "python3-minimal"
+      ],
+      "rebooted": false,
+      "stage": "patched"
+    },
+    {
+      "after": [
+        "python3-minimal=3.12.3-0ubuntu2.1"
+      ],
+      "at": "2026-10-04T18:52:08Z",
+      "before": [
+        "python3-minimal=3.12.3-0ubuntu2.1"
+      ],
+      "node": "fleetops-web-2",
+      "packages": [
+        "python3-minimal"
+      ],
+      "rebooted": true,
+      "stage": "ready"
+    },
+    {
+      "after": [
+        "python3-minimal=3.12.3-0ubuntu2.1"
+      ],
+      "at": "2026-10-04T18:51:48Z",
+      "before": [
+        "python3-minimal=3.12.3-0ubuntu2.1"
+      ],
+      "node": "fleetops-web-2",
+      "packages": [
+        "python3-minimal"
+      ],
+      "rebooted": false,
+      "stage": "recovery-started"
+    },
+    {
+      "after": [
+        "python3-minimal=3.12.3-0ubuntu2.1"
+      ],
+      "at": "2026-10-04T18:52:13Z",
+      "before": [
+        "python3-minimal=3.12.3-0ubuntu2.1"
+      ],
+      "node": "fleetops-web-2",
+      "packages": [
+        "python3-minimal"
+      ],
+      "rebooted": true,
+      "stage": "rejoined"
+    },
+    {
+      "after": [],
+      "at": "2026-10-04T18:51:30Z",
+      "before": [],
+      "node": "fleetops-web-2",
+      "packages": [
+        "python3-minimal"
+      ],
+      "rebooted": false,
+      "stage": "started"
+    }
+  ],
+  "per_node": {
+    "fleetops-web-1": {
+      "stages": [
+        "drained",
+        "patched",
+        "ready",
+        "recovery-started",
+        "rejoined",
+        "started"
+      ],
+      "package_before": [
+        "python3-minimal=3.12.3-0ubuntu2.1"
+      ],
+      "package_after": [
+        "python3-minimal=3.12.3-0ubuntu2.1"
+      ],
+      "maintenance_seconds": 45.0,
+      "recovery_seconds": 21.0
+    },
+    "fleetops-web-2": {
+      "stages": [
+        "drained",
+        "patched",
+        "ready",
+        "recovery-started",
+        "rejoined",
+        "started"
+      ],
+      "package_before": [
+        "python3-minimal=3.12.3-0ubuntu2.1"
+      ],
+      "package_after": [
+        "python3-minimal=3.12.3-0ubuntu2.1"
+      ],
+      "maintenance_seconds": 43.0,
+      "recovery_seconds": 20.0
+    }
+  },
+  "boot_before": {
+    "fleetops-web-1": "8973417f-c6f4-425e-8b66-34b81bc18d1d",
+    "fleetops-web-2": "71f84e6e-cf9f-4e23-bd5a-ffd607c728d5"
+  },
+  "boot_after": {
+    "fleetops-web-1": "56460c61-037f-4a5f-a216-6fd8f8e6544d",
+    "fleetops-web-2": "76ceb6c2-ccbd-47c2-95aa-f4e3c1a223ca"
+  },
+  "backend_after": {
+    "fleetops-web-1": {
+      "status": "UP",
+      "active": 0,
+      "queued": 0
+    },
+    "fleetops-web-2": {
+      "status": "UP",
+      "active": 0,
+      "queued": 0
+    }
+  },
+  "exit_status": 0,
+  "probe": {
+    "schema_version": 1,
+    "window_start": "2026-10-04T18:50:34.725376+00:00",
+    "window_end": "2026-10-04T18:52:16.772465+00:00",
+    "requests": 511,
+    "failures": 0,
+    "failure_rate": 0.0,
+    "p95_latency_ms": 3.2244570011243923,
+    "per_node": {
+      "fleetops-web-2": 259,
+      "fleetops-web-1": 252
+    },
+    "interval_seconds": 0.2,
+    "timeout_seconds": 2.0,
+    "method": "Sequential host HTTP GET; nearest-rank p95; failures include HTTP, connection, timeout and invalid identity/schema"
+  },
+  "restored_at": "2026-10-04T18:52:41.855500+00:00",
+  "final_status": "healthy"
+}

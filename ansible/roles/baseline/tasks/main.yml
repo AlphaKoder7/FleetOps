@@ -1,55 +1,73 @@
 ---
 - name: Install defined baseline packages without metadata refresh
   ansible.builtin.apt:
-    name: [python3, ufw, logrotate]
+    name:
+      - python3
+      - ufw
+      - logrotate
     state: present
 - name: Create root-owned operational directories
   ansible.builtin.file:
-    path: "{{ item }}"
+    path: '{{ item }}'
     state: directory
     owner: root
     group: root
     mode: '0755'
-  loop: [/etc/fleetops, /opt/fleetops, /var/log/fleetops]
+  loop:
+    - /etc/fleetops
+    - /opt/fleetops
+    - /var/log/fleetops
 - name: Configure operational log rotation
   ansible.builtin.copy:
-    content: |
-      /var/log/fleetops/*.log {
-        weekly
-        rotate 4
-        missingok
-        notifempty
-        compress
-        create 0640 root adm
-      }
     dest: /etc/logrotate.d/fleetops
     owner: root
     group: root
     mode: '0644'
     validate: /usr/sbin/logrotate -d %s
+    src: logrotate
 - name: Allow management and service access from the lab subnet
   ansible.builtin.command:
-    argv: [ufw, allow, from, "{{ fleetops_subnet }}", to, any, port, "{{ item }}", proto, tcp]
-  loop: "{{ ['22', '18080'] if inventory_hostname == 'fleetops-lb' else ['22', '18081'] }}"
+    argv:
+      - ufw
+      - allow
+      - from
+      - '{{ fleetops_subnet }}'
+      - to
+      - any
+      - port
+      - '{{ item }}'
+      - proto
+      - tcp
+  loop: '{{ [''22'', ''18080''] if inventory_hostname == ''fleetops-lb'' else [''22'', ''18081''] }}'
   register: baseline_firewall_rule
-  changed_when: "'Skipping' not in baseline_firewall_rule.stdout"
+  changed_when: '''Skipping'' not in baseline_firewall_rule.stdout'
 - name: Read current guest firewall default policy
   ansible.builtin.slurp:
     src: /etc/default/ufw
   register: baseline_firewall_defaults
 - name: Set incoming deny policy
   ansible.builtin.command:
-    argv: [ufw, default, deny, incoming]
+    argv:
+      - ufw
+      - default
+      - deny
+      - incoming
   register: baseline_firewall_policy
-  when: "'DEFAULT_INPUT_POLICY=\"DROP\"' not in (baseline_firewall_defaults.content | b64decode)"
+  when: '''DEFAULT_INPUT_POLICY="DROP"'' not in (baseline_firewall_defaults.content | b64decode)'
   changed_when: true
 - name: Read firewall state
   ansible.builtin.command:
-    argv: [ufw, status]
+    argv:
+      - ufw
+      - status
   register: baseline_firewall_status
   changed_when: false
+  check_mode: false
 - name: Enable guest firewall after SSH rule is present
   ansible.builtin.command:
-    argv: [ufw, --force, enable]
-  when: "'Status: inactive' in baseline_firewall_status.stdout"
+    argv:
+      - ufw
+      - --force
+      - enable
+  when: '''Status: inactive'' in baseline_firewall_status.stdout'
   changed_when: true

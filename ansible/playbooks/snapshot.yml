@@ -1,0 +1,38 @@
+---
+- name: Observe guest file and service state for read-only detection proof
+  hosts: application_nodes
+  gather_facts: false
+  become: true
+  tasks:
+    - name: Validate controller snapshot label
+      ansible.builtin.assert:
+        that: snapshot_label in ['before', 'after']
+    - name: Read application settings hash and metadata
+      ansible.builtin.stat:
+        path: /etc/fleetops/application.json
+        checksum_algorithm: sha256
+      register: snapshot_file
+    - name: Read service state without mutation
+      ansible.builtin.command:
+        argv:
+          - systemctl
+          - show
+          - fleetops-app
+          - -p
+          - ActiveState
+          - -p
+          - UnitFileState
+          - -p
+          - NRestarts
+      register: snapshot_service
+      changed_when: false
+    - name: Save selected immutable observations on controller
+      ansible.builtin.copy:
+        content: '{{ {''host'': inventory_hostname, ''file'': {''checksum'': snapshot_file.stat.checksum, ''mode'': snapshot_file.stat.mode,
+          ''mtime'': snapshot_file.stat.mtime}, ''service'': snapshot_service.stdout_lines} | to_nice_json }}
+
+          '
+        dest: '{{ playbook_dir }}/../../.runtime/snapshots/{{ snapshot_label }}-{{ inventory_hostname }}.json'
+        mode: '0600'
+      delegate_to: localhost
+      become: false

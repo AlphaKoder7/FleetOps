@@ -1,0 +1,14 @@
+---
+- name: Demonstrate rejection before replacing active HAProxy configuration
+  hosts: load_balancers
+  gather_facts: false
+  become: true
+  tasks:
+    - name: Attempt invalid candidate with production validation path
+      ansible.builtin.copy:
+        content: "this is invalid HAProxy configuration\n"
+        dest: /etc/haproxy/haproxy.cfg
+        owner: root
+        group: root
+        mode: '0644'
+        validate: /usr/sbin/haproxy -c -f %s

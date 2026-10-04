@@ -1,0 +1,26 @@
+{
+  "kind": "scoped-clean-rebuild",
+  "started_at": "2026-10-04T19:14:28.647082+00:00",
+  "teardown_exit_status": 0,
+  "recorded_old_resources_verified_absent": true,
+  "old_domains": {
+    "fleetops-lb": "58bc5de1-893e-4217-9122-f36e57e5198a",
+    "fleetops-web-1": "87cb3d01-cebe-4083-bee4-624d687af7a5",
+    "fleetops-web-2": "6ddcd3f7-e256-4c30-a49c-8bc303ae4774"
+  },
+  "old_network_uuid": "3aee232c-5a35-4cf5-8359-451dd7fc8950",
+  "old_pool_uuid": "57baac17-b0cd-4ac1-a160-b6949f7059d7",
+  "rebuild_status": "verified",
+  "new_domains": {
+    "fleetops-lb": "bad42be0-f1d7-47cd-ac88-64b98d8f0966",
+    "fleetops-web-1": "32242428-e3e5-4ce5-a4d0-2d9561d742b9",
+    "fleetops-web-2": "58aff66f-c846-489d-b7d7-6e02f80d4fdd"
+  },
+  "new_network_uuid": "b2d99b23-d39c-40ab-a8c1-ba75567c6bc8",
+  "new_pool_uuid": "0a6314d8-fc74-41c2-a67d-00bb733c0244",
+  "image_sha256": "6a81c37564db9b1ee84e141922625e1d7c5b389b99bb3c572e0243607d5bb4d2",
+  "verified_at": "2026-10-04T19:36:36.127615+00:00",
+  "configuration_exit_status": 0,
+  "integration_evidence": "local-integration.json",
+  "repeat_up_preserved_new_resources": true
+}

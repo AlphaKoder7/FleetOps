@@ -1,0 +1,279 @@
+{
+  "kind": "maintenance-abort",
+  "started_at": "2026-10-04T18:53:01.847291+00:00",
+  "untouched_peer": {
+    "before": {
+      "boot_id": "76ceb6c2-ccbd-47c2-95aa-f4e3c1a223ca",
+      "config_sha256": "24bad8de48db5a1133b472aca497ed87ff51c73b5cc864e8380355fb13d6e79f",
+      "package": "3.12.3-0ubuntu2.1",
+      "service": "NRestarts=0\nActiveState=active\n",
+      "apt_metadata": {
+        "archive.ubuntu.com_ubuntu_dists_noble-updates_restricted_cnf_Commands-amd64": 1780484945000000000,
+        "archive.ubuntu.com_ubuntu_dists_noble-backports_restricted_dep11_Components-amd64.yml.gz": 1776680167000000000,
+        "archive.ubuntu.com_ubuntu_dists_noble-updates_multiverse_binary-amd64_Packages": 1789466623000000000,
+        "archive.ubuntu.com_ubuntu_dists_noble-updates_multiverse_dep11_Components-amd64.yml.gz": 1791101335000000000,
+        "security.ubuntu.com_ubuntu_dists_noble-security_main_cnf_Commands-amd64": 1783357606000000000,
+        "archive.ubuntu.com_ubuntu_dists_noble_universe_cnf_Commands-amd64": 1704420523000000000,
+        "archive.ubuntu.com_ubuntu_dists_noble-updates_main_binary-amd64_Packages": 1791096624000000000,
+        "archive.ubuntu.com_ubuntu_dists_noble-updates_multiverse_cnf_Commands-amd64": 1780492663000000000,
+        "archive.ubuntu.com_ubuntu_dists_noble_multiverse_binary-amd64_Packages": 1713897247000000000,
+        "archive.ubuntu.com_ubuntu_dists_noble-updates_InRelease": 1791112497000000000,
+        "archive.ubuntu.com_ubuntu_dists_noble-backports_multiverse_i18n_Translation-en": 1776792634000000000,
+        "archive.ubuntu.com_ubuntu_dists_noble-backports_universe_binary-amd64_Packages": 1789945967000000000,
+        "archive.ubuntu.com_ubuntu_dists_noble-backports_InRelease": 1791112532000000000,
+        "archive.ubuntu.com_ubuntu_dists_noble-updates_restricted_binary-amd64_Packages": 1790863939000000000,
+        "archive.ubuntu.com_ubuntu_dists_noble-backports_main_dep11_Components-amd64.yml.gz": 1791100010000000000,
+        "archive.ubuntu.com_ubuntu_dists_noble_InRelease": 1714057881000000000,
+        "archive.ubuntu.com_ubuntu_dists_noble_main_cnf_Commands-amd64": 1704392477000000000,
+        "archive.ubuntu.com_ubuntu_dists_noble-backports_universe_i18n_Translation-en": 1789945967000000000,
+        "lock": 1791138082043496410,
+        "archive.ubuntu.com_ubuntu_dists_noble-backports_universe_dep11_Components-amd64.yml.gz": 1791100176000000000,
+        "security.ubuntu.com_ubuntu_dists_noble-security_multiverse_binary-amd64_Packages": 1784831605000000000,
+        "archive.ubuntu.com_ubuntu_dists_noble-updates_restricted_i18n_Translation-en": 1790863939000000000,
+        "archive.ubuntu.com_ubuntu_dists_noble-updates_universe_i18n_Translation-en": 1790740800000000000,
+        "archive.ubuntu.com_ubuntu_dists_noble-backports_restricted_cnf_Commands-amd64": 1704388166000000000,
+        "archive.ubuntu.com_ubuntu_dists_noble-backports_multiverse_dep11_Components-amd64.yml.gz": 1776680047000000000,
+        "archive.ubuntu.com_ubuntu_dists_noble-updates_restricted_dep11_Components-amd64.yml.gz": 1776681890000000000,
+        "security.ubuntu.com_ubuntu_dists_noble-security_main_dep11_Components-amd64.yml.gz": 1791100792000000000,
+        "security.ubuntu.com_ubuntu_dists_noble-security_multiverse_i18n_Translation-en": 1789653159000000000,
+        "archive.ubuntu.com_ubuntu_dists_noble-updates_main_cnf_Commands-amd64": 1783201577000000000,
+        "archive.ubuntu.com_ubuntu_dists_noble_restricted_i18n_Translation-en": 1713993181000000000,
+        "archive.ubuntu.com_ubuntu_dists_noble_multiverse_dep11_Components-amd64.yml.gz": 1699829265000000000,
+        "security.ubuntu.com_ubuntu_dists_noble-security_universe_dep11_Components-amd64.yml.gz": 1791100917000000000,
+        "archive.ubuntu.com_ubuntu_dists_noble_main_dep11_Components-amd64.yml.gz": 1699828897000000000,
+        "archive.ubuntu.com_ubuntu_dists_noble_main_binary-amd64_Packages": 1713993181000000000,
+        "security.ubuntu.com_ubuntu_dists_noble-security_restricted_cnf_Commands-amd64": 1780492934000000000,
+        "archive.ubuntu.com_ubuntu_dists_noble_universe_dep11_Components-amd64.yml.gz": 1699829047000000000,
+        "archive.ubuntu.com_ubuntu_dists_noble_main_i18n_Translation-en": 1713993181000000000,
+        "archive.ubuntu.com_ubuntu_dists_noble_universe_binary-amd64_Packages": 1714046184000000000,
+        "archive.ubuntu.com_ubuntu_dists_noble_restricted_binary-amd64_Packages": 1713993181000000000,
+        "security.ubuntu.com_ubuntu_dists_noble-security_restricted_dep11_Components-amd64.yml.gz": 1776681338000000000,
+        "archive.ubuntu.com_ubuntu_dists_noble-updates_universe_binary-amd64_Packages": 1791096624000000000,
+        "security.ubuntu.com_ubuntu_dists_noble-security_restricted_binary-amd64_Packages": 1790756272000000000,
+        "archive.ubuntu.com_ubuntu_dists_noble_restricted_cnf_Commands-amd64": 1704396820000000000,
+        "archive.ubuntu.com_ubuntu_dists_noble-backports_main_i18n_Translation-en": 1776792634000000000,
+        "archive.ubuntu.com_ubuntu_dists_noble-backports_main_cnf_Commands-amd64": 1781200586000000000,
+        "archive.ubuntu.com_ubuntu_dists_noble-updates_universe_dep11_Components-amd64.yml.gz": 1791101205000000000,
+        "security.ubuntu.com_ubuntu_dists_noble-security_universe_i18n_Translation-en": 1790606622000000000,
+        "security.ubuntu.com_ubuntu_dists_noble-security_universe_cnf_Commands-amd64": 1783347215000000000,
+        "security.ubuntu.com_ubuntu_dists_noble-security_multiverse_cnf_Commands-amd64": 1780493039000000000,
+        "archive.ubuntu.com_ubuntu_dists_noble-updates_main_i18n_Translation-en": 1790868962000000000,
+        "security.ubuntu.com_ubuntu_dists_noble-security_restricted_i18n_Translation-en": 1790756272000000000,
+        "archive.ubuntu.com_ubuntu_dists_noble-backports_multiverse_cnf_Commands-amd64": 1704388172000000000,
+        "archive.ubuntu.com_ubuntu_dists_noble-updates_main_dep11_Components-amd64.yml.gz": 1791101082000000000,
+        "archive.ubuntu.com_ubuntu_dists_noble-backports_main_binary-amd64_Packages": 1789945967000000000,
+        "archive.ubuntu.com_ubuntu_dists_noble_multiverse_i18n_Translation-en": 1713897247000000000,
+        "security.ubuntu.com_ubuntu_dists_noble-security_InRelease": 1791112454000000000,
+        "archive.ubuntu.com_ubuntu_dists_noble_multiverse_cnf_Commands-amd64": 1704471213000000000,
+        "security.ubuntu.com_ubuntu_dists_noble-security_multiverse_dep11_Components-amd64.yml.gz": 1776681215000000000,
+        "security.ubuntu.com_ubuntu_dists_noble-security_main_binary-amd64_Packages": 1790877254000000000,
+        "archive.ubuntu.com_ubuntu_dists_noble_universe_i18n_Translation-en": 1714042920000000000,
+        "archive.ubuntu.com_ubuntu_dists_noble-updates_universe_cnf_Commands-amd64": 1783069927000000000,
+        "security.ubuntu.com_ubuntu_dists_noble-security_main_i18n_Translation-en": 1790853297000000000,
+        "archive.ubuntu.com_ubuntu_dists_noble-backports_multiverse_binary-amd64_Packages": 1776792634000000000,
+        "security.ubuntu.com_ubuntu_dists_noble-security_universe_binary-amd64_Packages": 1790877254000000000,
+        "archive.ubuntu.com_ubuntu_dists_noble-updates_multiverse_i18n_Translation-en": 1789565640000000000,
+        "archive.ubuntu.com_ubuntu_dists_noble-backports_universe_cnf_Commands-amd64": 1781200618000000000
+      }
+    },
+    "after": {
+      "boot_id": "76ceb6c2-ccbd-47c2-95aa-f4e3c1a223ca",
+      "config_sha256": "24bad8de48db5a1133b472aca497ed87ff51c73b5cc864e8380355fb13d6e79f",
+      "package": "3.12.3-0ubuntu2.1",
+      "service": "NRestarts=0\nActiveState=active\n",
+      "apt_metadata": {
+        "archive.ubuntu.com_ubuntu_dists_noble-updates_restricted_cnf_Commands-amd64": 1780484945000000000,
+        "archive.ubuntu.com_ubuntu_dists_noble-backports_restricted_dep11_Components-amd64.yml.gz": 1776680167000000000,
+        "archive.ubuntu.com_ubuntu_dists_noble-updates_multiverse_binary-amd64_Packages": 1789466623000000000,
+        "archive.ubuntu.com_ubuntu_dists_noble-updates_multiverse_dep11_Components-amd64.yml.gz": 1791101335000000000,
+        "security.ubuntu.com_ubuntu_dists_noble-security_main_cnf_Commands-amd64": 1783357606000000000,
+        "archive.ubuntu.com_ubuntu_dists_noble_universe_cnf_Commands-amd64": 1704420523000000000,
+        "archive.ubuntu.com_ubuntu_dists_noble-updates_main_binary-amd64_Packages": 1791096624000000000,
+        "archive.ubuntu.com_ubuntu_dists_noble-updates_multiverse_cnf_Commands-amd64": 1780492663000000000,
+        "archive.ubuntu.com_ubuntu_dists_noble_multiverse_binary-amd64_Packages": 1713897247000000000,
+        "archive.ubuntu.com_ubuntu_dists_noble-updates_InRelease": 1791112497000000000,
+        "archive.ubuntu.com_ubuntu_dists_noble-backports_multiverse_i18n_Translation-en": 1776792634000000000,
+        "archive.ubuntu.com_ubuntu_dists_noble-backports_universe_binary-amd64_Packages": 1789945967000000000,
+        "archive.ubuntu.com_ubuntu_dists_noble-backports_InRelease": 1791112532000000000,
+        "archive.ubuntu.com_ubuntu_dists_noble-updates_restricted_binary-amd64_Packages": 1790863939000000000,
+        "archive.ubuntu.com_ubuntu_dists_noble-backports_main_dep11_Components-amd64.yml.gz": 1791100010000000000,
+        "archive.ubuntu.com_ubuntu_dists_noble_InRelease": 1714057881000000000,
+        "archive.ubuntu.com_ubuntu_dists_noble_main_cnf_Commands-amd64": 1704392477000000000,
+        "archive.ubuntu.com_ubuntu_dists_noble-backports_universe_i18n_Translation-en": 1789945967000000000,
+        "lock": 1791138082043496410,
+        "archive.ubuntu.com_ubuntu_dists_noble-backports_universe_dep11_Components-amd64.yml.gz": 1791100176000000000,
+        "security.ubuntu.com_ubuntu_dists_noble-security_multiverse_binary-amd64_Packages": 1784831605000000000,
+        "archive.ubuntu.com_ubuntu_dists_noble-updates_restricted_i18n_Translation-en": 1790863939000000000,
+        "archive.ubuntu.com_ubuntu_dists_noble-updates_universe_i18n_Translation-en": 1790740800000000000,
+        "archive.ubuntu.com_ubuntu_dists_noble-backports_restricted_cnf_Commands-amd64": 1704388166000000000,
+        "archive.ubuntu.com_ubuntu_dists_noble-backports_multiverse_dep11_Components-amd64.yml.gz": 1776680047000000000,
+        "archive.ubuntu.com_ubuntu_dists_noble-updates_restricted_dep11_Components-amd64.yml.gz": 1776681890000000000,
+        "security.ubuntu.com_ubuntu_dists_noble-security_main_dep11_Components-amd64.yml.gz": 1791100792000000000,
+        "security.ubuntu.com_ubuntu_dists_noble-security_multiverse_i18n_Translation-en": 1789653159000000000,
+        "archive.ubuntu.com_ubuntu_dists_noble-updates_main_cnf_Commands-amd64": 1783201577000000000,
+        "archive.ubuntu.com_ubuntu_dists_noble_restricted_i18n_Translation-en": 1713993181000000000,
+        "archive.ubuntu.com_ubuntu_dists_noble_multiverse_dep11_Components-amd64.yml.gz": 1699829265000000000,
+        "security.ubuntu.com_ubuntu_dists_noble-security_universe_dep11_Components-amd64.yml.gz": 1791100917000000000,
+        "archive.ubuntu.com_ubuntu_dists_noble_main_dep11_Components-amd64.yml.gz": 1699828897000000000,
+        "archive.ubuntu.com_ubuntu_dists_noble_main_binary-amd64_Packages": 1713993181000000000,
+        "security.ubuntu.com_ubuntu_dists_noble-security_restricted_cnf_Commands-amd64": 1780492934000000000,
+        "archive.ubuntu.com_ubuntu_dists_noble_universe_dep11_Components-amd64.yml.gz": 1699829047000000000,
+        "archive.ubuntu.com_ubuntu_dists_noble_main_i18n_Translation-en": 1713993181000000000,
+        "archive.ubuntu.com_ubuntu_dists_noble_universe_binary-amd64_Packages": 1714046184000000000,
+        "archive.ubuntu.com_ubuntu_dists_noble_restricted_binary-amd64_Packages": 1713993181000000000,
+        "security.ubuntu.com_ubuntu_dists_noble-security_restricted_dep11_Components-amd64.yml.gz": 1776681338000000000,
+        "archive.ubuntu.com_ubuntu_dists_noble-updates_universe_binary-amd64_Packages": 1791096624000000000,
+        "security.ubuntu.com_ubuntu_dists_noble-security_restricted_binary-amd64_Packages": 1790756272000000000,
+        "archive.ubuntu.com_ubuntu_dists_noble_restricted_cnf_Commands-amd64": 1704396820000000000,
+        "archive.ubuntu.com_ubuntu_dists_noble-backports_main_i18n_Translation-en": 1776792634000000000,
+        "archive.ubuntu.com_ubuntu_dists_noble-backports_main_cnf_Commands-amd64": 1781200586000000000,
+        "archive.ubuntu.com_ubuntu_dists_noble-updates_universe_dep11_Components-amd64.yml.gz": 1791101205000000000,
+        "security.ubuntu.com_ubuntu_dists_noble-security_universe_i18n_Translation-en": 1790606622000000000,
+        "security.ubuntu.com_ubuntu_dists_noble-security_universe_cnf_Commands-amd64": 1783347215000000000,
+        "security.ubuntu.com_ubuntu_dists_noble-security_multiverse_cnf_Commands-amd64": 1780493039000000000,
+        "archive.ubuntu.com_ubuntu_dists_noble-updates_main_i18n_Translation-en": 1790868962000000000,
+        "security.ubuntu.com_ubuntu_dists_noble-security_restricted_i18n_Translation-en": 1790756272000000000,
+        "archive.ubuntu.com_ubuntu_dists_noble-backports_multiverse_cnf_Commands-amd64": 1704388172000000000,
+        "archive.ubuntu.com_ubuntu_dists_noble-updates_main_dep11_Components-amd64.yml.gz": 1791101082000000000,
+        "archive.ubuntu.com_ubuntu_dists_noble-backports_main_binary-amd64_Packages": 1789945967000000000,
+        "archive.ubuntu.com_ubuntu_dists_noble_multiverse_i18n_Translation-en": 1713897247000000000,
+        "security.ubuntu.com_ubuntu_dists_noble-security_InRelease": 1791112454000000000,
+        "archive.ubuntu.com_ubuntu_dists_noble_multiverse_cnf_Commands-amd64": 1704471213000000000,
+        "security.ubuntu.com_ubuntu_dists_noble-security_multiverse_dep11_Components-amd64.yml.gz": 1776681215000000000,
+        "security.ubuntu.com_ubuntu_dists_noble-security_main_binary-amd64_Packages": 1790877254000000000,
+        "archive.ubuntu.com_ubuntu_dists_noble_universe_i18n_Translation-en": 1714042920000000000,
+        "archive.ubuntu.com_ubuntu_dists_noble-updates_universe_cnf_Commands-amd64": 1783069927000000000,
+        "security.ubuntu.com_ubuntu_dists_noble-security_main_i18n_Translation-en": 1790853297000000000,
+        "archive.ubuntu.com_ubuntu_dists_noble-backports_multiverse_binary-amd64_Packages": 1776792634000000000,
+        "security.ubuntu.com_ubuntu_dists_noble-security_universe_binary-amd64_Packages": 1790877254000000000,
+        "archive.ubuntu.com_ubuntu_dists_noble-updates_multiverse_i18n_Translation-en": 1789565640000000000,
+        "archive.ubuntu.com_ubuntu_dists_noble-backports_universe_cnf_Commands-amd64": 1781200618000000000
+      }
+    }
+  },
+  "events": [
+    {
+      "after": [],
+      "at": "2026-10-04T18:53:40Z",
+      "before": [],
+      "node": "fleetops-web-1",
+      "packages": [
+        "python3-minimal"
+      ],
+      "rebooted": false,
+      "stage": "drained"
+    },
+    {
+      "after": [
+        "python3-minimal=3.12.3-0ubuntu2.1"
+      ],
+      "at": "2026-10-04T18:54:59Z",
+      "before": [
+        "python3-minimal=3.12.3-0ubuntu2.1"
+      ],
+      "node": "fleetops-web-1",
+      "packages": [
+        "python3-minimal"
+      ],
+      "rebooted": true,
+      "stage": "failed"
+    },
+    {
+      "after": [
+        "python3-minimal=3.12.3-0ubuntu2.1"
+      ],
+      "at": "2026-10-04T18:53:52Z",
+      "before": [
+        "python3-minimal=3.12.3-0ubuntu2.1"
+      ],
+      "node": "fleetops-web-1",
+      "packages": [
+        "python3-minimal"
+      ],
+      "rebooted": false,
+      "stage": "patched"
+    },
+    {
+      "after": [
+        "python3-minimal=3.12.3-0ubuntu2.1"
+      ],
+      "at": "2026-10-04T18:53:54Z",
+      "before": [
+        "python3-minimal=3.12.3-0ubuntu2.1"
+      ],
+      "node": "fleetops-web-1",
+      "packages": [
+        "python3-minimal"
+      ],
+      "rebooted": false,
+      "stage": "recovery-started"
+    },
+    {
+      "after": [],
+      "at": "2026-10-04T18:53:36Z",
+      "before": [],
+      "node": "fleetops-web-1",
+      "packages": [
+        "python3-minimal"
+      ],
+      "rebooted": false,
+      "stage": "started"
+    }
+  ],
+  "per_node": {
+    "fleetops-web-1": {
+      "stages": [
+        "drained",
+        "failed",
+        "patched",
+        "recovery-started",
+        "started"
+      ],
+      "package_before": [
+        "python3-minimal=3.12.3-0ubuntu2.1"
+      ],
+      "package_after": [
+        "python3-minimal=3.12.3-0ubuntu2.1"
+      ]
+    }
+  },
+  "boot_before": {
+    "fleetops-web-1": "56460c61-037f-4a5f-a216-6fd8f8e6544d",
+    "fleetops-web-2": "76ceb6c2-ccbd-47c2-95aa-f4e3c1a223ca"
+  },
+  "boot_after": {
+    "fleetops-web-1": "d7e5dbe4-056e-404b-bb39-2592a825c252",
+    "fleetops-web-2": "76ceb6c2-ccbd-47c2-95aa-f4e3c1a223ca"
+  },
+  "backend_after": {
+    "fleetops-web-1": {
+      "status": "MAINT",
+      "active": 0,
+      "queued": 0
+    },
+    "fleetops-web-2": {
+      "status": "UP",
+      "active": 0,
+      "queued": 0
+    }
+  },
+  "exit_status": 2,
+  "probe": {
+    "schema_version": 1,
+    "window_start": "2026-10-04T18:53:29.128276+00:00",
+    "window_end": "2026-10-04T18:56:12.609470+00:00",
+    "requests": 818,
+    "failures": 0,
+    "failure_rate": 0.0,
+    "p95_latency_ms": 5.347983998944983,
+    "per_node": {
+      "fleetops-web-2": 773,
+      "fleetops-web-1": 45
+    },
+    "interval_seconds": 0.2,
+    "timeout_seconds": 2.0,
+    "method": "Sequential host HTTP GET; nearest-rank p95; failures include HTTP, connection, timeout and invalid identity/schema"
+  },
+  "restored_at": "2026-10-04T18:56:38.071614+00:00",
+  "final_status": "healthy"
+}

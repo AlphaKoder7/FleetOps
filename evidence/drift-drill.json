@@ -1,0 +1,157 @@
+{
+  "kind": "simulated-drift-incident",
+  "started_at": "2026-10-04T18:40:50.186263+00:00",
+  "detection": {
+    "schema_version": 1,
+    "observed_at": "2026-10-04T18:41:50.946377+00:00",
+    "status": "drift",
+    "hosts": [
+      {
+        "findings": [],
+        "host": "fleetops-lb"
+      },
+      {
+        "findings": [
+          {
+            "expected": {
+              "checksum": "169469dfb088f5b756b4bdb9436b054dc4f8cf6ea00e5f6cc92628d85ce80fe2",
+              "mode": "0644",
+              "path": "/etc/fleetops/application.json"
+            },
+            "kind": "file",
+            "observed": {
+              "atime": 1791139287.951896,
+              "attr_flags": "e",
+              "attributes": [
+                "extents"
+              ],
+              "block_size": 4096,
+              "blocks": 8,
+              "charset": "us-ascii",
+              "checksum": "f196091547c97f9e4fc1dee4bccba16e06645a17efce31c19647d0956a0084c2",
+              "ctime": 1791139281.8006039,
+              "dev": 64769,
+              "device_type": 0,
+              "executable": false,
+              "exists": true,
+              "gid": 0,
+              "gr_name": "root",
+              "inode": 262251,
+              "isblk": false,
+              "ischr": false,
+              "isdir": false,
+              "isfifo": false,
+              "isgid": false,
+              "islnk": false,
+              "isreg": true,
+              "issock": false,
+              "isuid": false,
+              "mimetype": "application/json",
+              "mode": "0644",
+              "mtime": 1791139281.8016455,
+              "nlink": 1,
+              "path": "/etc/fleetops/application.json",
+              "pw_name": "root",
+              "readable": true,
+              "rgrp": true,
+              "roth": true,
+              "rusr": true,
+              "size": 127,
+              "uid": 0,
+              "version": "3740295285",
+              "wgrp": false,
+              "woth": false,
+              "writeable": true,
+              "wusr": true,
+              "xgrp": false,
+              "xoth": false,
+              "xusr": false
+            },
+            "path": "/etc/fleetops/application.json"
+          }
+        ],
+        "host": "fleetops-web-1"
+      },
+      {
+        "findings": [
+          {
+            "expected": {
+              "state": "running",
+              "status": "enabled"
+            },
+            "kind": "service",
+            "name": "fleetops-app.service",
+            "observed": {
+              "name": "fleetops-app.service",
+              "source": "systemd",
+              "state": "stopped",
+              "status": "enabled"
+            }
+          }
+        ],
+        "host": "fleetops-web-2"
+      }
+    ]
+  },
+  "detection_read_only": true,
+  "repaired_at": "2026-10-04T18:43:34.290167+00:00",
+  "final_status": "healthy-clean",
+  "snapshots": {
+    "fleetops-web-1": {
+      "before": {
+        "file": {
+          "checksum": "f196091547c97f9e4fc1dee4bccba16e06645a17efce31c19647d0956a0084c2",
+          "mode": "0644",
+          "mtime": 1791139281.8016455
+        },
+        "host": "fleetops-web-1",
+        "service": [
+          "NRestarts=0",
+          "ActiveState=active",
+          "UnitFileState=enabled"
+        ]
+      },
+      "after": {
+        "file": {
+          "checksum": "f196091547c97f9e4fc1dee4bccba16e06645a17efce31c19647d0956a0084c2",
+          "mode": "0644",
+          "mtime": 1791139281.8016455
+        },
+        "host": "fleetops-web-1",
+        "service": [
+          "NRestarts=0",
+          "ActiveState=active",
+          "UnitFileState=enabled"
+        ]
+      }
+    },
+    "fleetops-web-2": {
+      "before": {
+        "file": {
+          "checksum": "24bad8de48db5a1133b472aca497ed87ff51c73b5cc864e8380355fb13d6e79f",
+          "mode": "0644",
+          "mtime": 1791138447.0682673
+        },
+        "host": "fleetops-web-2",
+        "service": [
+          "NRestarts=0",
+          "ActiveState=inactive",
+          "UnitFileState=enabled"
+        ]
+      },
+      "after": {
+        "file": {
+          "checksum": "24bad8de48db5a1133b472aca497ed87ff51c73b5cc864e8380355fb13d6e79f",
+          "mode": "0644",
+          "mtime": 1791138447.0682673
+        },
+        "host": "fleetops-web-2",
+        "service": [
+          "NRestarts=0",
+          "ActiveState=inactive",
+          "UnitFileState=enabled"
+        ]
+      }
+    }
+  }
+}

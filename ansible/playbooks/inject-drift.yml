@@ -1,0 +1,19 @@
+---
+- name: Introduce two explicitly scoped guest faults
+  hosts: application_nodes
+  gather_facts: false
+  become: true
+  tasks:
+    - name: Modify a managed setting on the first application node
+      ansible.builtin.copy:
+        content: "{{ {'node': inventory_hostname, 'version': 'drifted', 'ready': true, 'bind': ansible_host, 'port': 18081} | to_nice_json }}\n"
+        dest: /etc/fleetops/application.json
+        owner: root
+        group: root
+        mode: '0644'
+      when: inventory_hostname == 'fleetops-web-1'
+    - name: Stop the second application service
+      ansible.builtin.systemd_service:
+        name: fleetops-app
+        state: stopped
+      when: inventory_hostname == 'fleetops-web-2'

@@ -1,15 +1,17 @@
-# Documentation only: replace addresses with discovered guest addresses.
 all:
   children:
     load_balancers:
       hosts:
         fleetops-lb:
           ansible_host: REPLACE_WITH_DISCOVERED_IP
+          ansible_connection: ssh
     application_nodes:
       hosts:
         fleetops-web-1:
           ansible_host: REPLACE_WITH_DISCOVERED_IP
+          ansible_connection: ssh
         fleetops-web-2:
           ansible_host: REPLACE_WITH_DISCOVERED_IP
+          ansible_connection: ssh
   vars:
     ansible_user: fleetops

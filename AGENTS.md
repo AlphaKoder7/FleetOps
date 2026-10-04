@@ -12,3 +12,5 @@ Read FLEETOPS_PLAN.md, AGENTS.md and STATUS.md before resuming. The plan is the 
 - No external publishing, pushing, contacting people, cloud provisioning or existing credential use. AWS preparation follows verified local completion; applying requires a separately initiated run.
 - Update STATUS.md after each phase with actual checks, blockers and next action. Make scoped local Git checkpoints when identity is configured; do not modify global identity.
 - Distinguish portable tests from real VM results. Never invent measurements, costs, incidents or completion. Preserve raw observations and report failures honestly.
+
+- Owner authorized read-only local Docker network names/IPAM conflict checks. Pin the local Unix socket; never inspect containers, credentials or network labels, and never alter existing networks.

@@ -1,0 +1,82 @@
+---
+- name: Inspect defined managed state without guest mutation
+  hosts: all
+  gather_facts: false
+  become: true
+  vars:
+    application_version: 1.0.0
+    application_ready: true
+    drift_common_files:
+      - path: /etc/logrotate.d/fleetops
+        mode: '0644'
+        checksum: '{{ lookup(''ansible.builtin.file'', playbook_dir + ''/../roles/baseline/files/logrotate'', rstrip=false)
+          | hash(''sha256'') }}'
+    drift_app_files:
+      - path: /opt/fleetops/server.py
+        mode: '0644'
+        checksum: '{{ lookup(''ansible.builtin.file'', playbook_dir + ''/../../app/server.py'', rstrip=false) | hash(''sha256'')
+          }}'
+      - path: /etc/fleetops/application.json
+        mode: '0644'
+        checksum: '{{ lookup(''ansible.builtin.template'', playbook_dir + ''/../roles/application/templates/application.json.j2'')
+          | hash(''sha256'') }}'
+      - path: /etc/systemd/system/fleetops-app.service
+        mode: '0644'
+        checksum: '{{ lookup(''ansible.builtin.template'', playbook_dir + ''/../roles/application/templates/fleetops-app.service.j2'')
+          | hash(''sha256'') }}'
+    drift_lb_files:
+      - path: /opt/fleetops/lbctl.py
+        mode: '0644'
+        checksum: "{{ lookup('ansible.builtin.file', playbook_dir + '/../../scripts/lbctl.py', rstrip=false) | hash('sha256') }}"
+      - path: /etc/haproxy/haproxy.cfg
+        mode: '0644'
+        checksum: '{{ lookup(''ansible.builtin.template'', playbook_dir + ''/../roles/load_balancer/templates/haproxy.cfg.j2'')
+          | hash(''sha256'') }}'
+  tasks:
+    - name: Select explicit managed-state inventory
+      ansible.builtin.set_fact:
+        drift_files: '{{ drift_common_files + (drift_lb_files if inventory_hostname == ''fleetops-lb'' else drift_app_files)
+          }}'
+        drift_packages: '{{ [''python3'', ''ufw'', ''logrotate''] + ([''haproxy''] if inventory_hostname == ''fleetops-lb''
+          else []) }}'
+        drift_service: '{{ ''haproxy.service'' if inventory_hostname == ''fleetops-lb'' else ''fleetops-app.service'' }}'
+        drift_findings: []
+    - name: Read file content hashes and permissions
+      ansible.builtin.stat:
+        path: '{{ item.path }}'
+        checksum_algorithm: sha256
+      loop: '{{ drift_files }}'
+      register: drift_stats
+    - name: Record file findings
+      ansible.builtin.set_fact:
+        drift_findings: '{{ drift_findings + [{''kind'': ''file'', ''path'': item.item.path, ''expected'': item.item, ''observed'':
+          item.stat}] }}'
+      loop: '{{ drift_stats.results }}'
+      when: not item.stat.exists or item.stat.checksum | default('') != item.item.checksum or item.stat.mode | default('')
+        != item.item.mode or item.stat.uid | default(-1) != 0 or item.stat.gid | default(-1) != 0
+    - name: Read required package presence
+      ansible.builtin.package_facts:
+        manager: apt
+    - name: Record missing packages
+      ansible.builtin.set_fact:
+        drift_findings: '{{ drift_findings + [{''kind'': ''package'', ''name'': item, ''expected'': ''present'', ''observed'':
+          ''absent''}] }}'
+      loop: '{{ drift_packages }}'
+      when: item not in ansible_facts.packages
+    - name: Read service enabled and runtime state
+      ansible.builtin.service_facts: null
+    - name: Record service state differences
+      ansible.builtin.set_fact:
+        drift_findings: '{{ drift_findings + [{''kind'': ''service'', ''name'': drift_service, ''expected'': {''status'':
+          ''enabled'', ''state'': ''running''}, ''observed'': ansible_facts.services[drift_service] | default({})}] }}'
+      when: ansible_facts.services[drift_service].state | default('absent') != 'running' or ansible_facts.services[drift_service].status
+        | default('absent') != 'enabled'
+    - name: Write observations on controller only
+      ansible.builtin.copy:
+        content: '{{ {''host'': inventory_hostname, ''findings'': drift_findings} | to_nice_json }}
+
+          '
+        dest: '{{ playbook_dir }}/../../.runtime/drift/{{ inventory_hostname }}.json'
+        mode: '0600'
+      delegate_to: localhost
+      become: false

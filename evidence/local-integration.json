@@ -1,0 +1,48 @@
+{
+  "kind": "real-local-vm-integration",
+  "started_at": "2026-10-04T19:25:53.937428+00:00",
+  "checks": [
+    {
+      "action": "ping",
+      "exit_status": 0
+    },
+    {
+      "action": "verify",
+      "exit_status": 0
+    },
+    {
+      "action": "check",
+      "exit_status": 0
+    },
+    {
+      "action": "configure",
+      "exit_status": 0
+    },
+    {
+      "action": "verify",
+      "exit_status": 0
+    },
+    {
+      "action": "check",
+      "exit_status": 0
+    }
+  ],
+  "idempotency": {
+    "fleetops-lb": {
+      "changed": 0,
+      "unreachable": 0,
+      "failed": 0
+    },
+    "fleetops-web-1": {
+      "changed": 0,
+      "unreachable": 0,
+      "failed": 0
+    },
+    "fleetops-web-2": {
+      "changed": 0,
+      "unreachable": 0,
+      "failed": 0
+    }
+  },
+  "verified_at": "2026-10-04T19:28:36.531962+00:00"
+}

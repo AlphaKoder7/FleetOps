@@ -1,0 +1,140 @@
+---
+- name: Preflight fleet health before any maintenance
+  hosts: load_balancers
+  any_errors_fatal: true
+  gather_facts: false
+  become: true
+  tasks:
+    - name: Require both backend health checks UP
+      ansible.builtin.command:
+        argv: [python3, /opt/fleetops/lbctl.py, check-all]
+      changed_when: false
+- name: Maintain application guests one at a time
+  hosts: application_nodes
+  gather_facts: false
+  become: true
+  serial: 1
+  order: sorted
+  any_errors_fatal: true
+  vars:
+    maintain_packages: [python3-minimal]
+    maintain_force_reboot: false
+    maintain_fail_host: ''
+    maintain_lb: "{{ groups['load_balancers'][0] }}"
+    maintain_other: "{{ (groups['application_nodes'] | difference([inventory_hostname]))[0] }}"
+  tasks:
+    - name: Reject unsafe target or empty package set
+      ansible.builtin.assert:
+        that:
+          - inventory_hostname in ['fleetops-web-1', 'fleetops-web-2']
+          - groups['application_nodes'] | length == 2
+          - maintain_packages == ['python3-minimal']
+    - name: Require alternate application to serve before draining
+      ansible.builtin.uri:
+        url: "http://{{ hostvars[maintain_other]['ansible_host'] }}:18081/health"
+        return_content: true
+      delegate_to: "{{ maintain_lb }}"
+      register: maintain_alternate
+      failed_when: maintain_alternate.status != 200 or maintain_alternate.json.node != maintain_other
+    - name: Record node start
+      ansible.builtin.include_tasks: ../tasks/event.yml
+      vars:
+        maintain_stage: started
+    - name: Perform gated maintenance with explicit abort on failure
+      block:
+        - name: Exclude selected backend from new requests
+          ansible.builtin.command:
+            argv: [python3, /opt/fleetops/lbctl.py, disable, "{{ inventory_hostname }}"]
+          delegate_to: "{{ maintain_lb }}"
+          changed_when: true
+        - name: Require existing backend requests to drain
+          ansible.builtin.command:
+            argv: [python3, /opt/fleetops/lbctl.py, wait-drained, "{{ inventory_hostname }}"]
+          delegate_to: "{{ maintain_lb }}"
+          changed_when: false
+        - name: Record completed drain
+          ansible.builtin.include_tasks: ../tasks/event.yml
+          vars:
+            maintain_stage: drained
+        - name: Record selected package versions before patch
+          ansible.builtin.command:
+            argv: "{{ ['dpkg-query', '-W', '-f=${Package}=${Version}\n'] + maintain_packages }}"
+          register: maintain_before
+          changed_when: false
+        - name: Refresh guest package metadata explicitly
+          ansible.builtin.apt:
+            update_cache: true
+        - name: Upgrade only the configured package set
+          ansible.builtin.apt:
+            name: "{{ maintain_packages }}"
+            state: latest
+            only_upgrade: true
+        - name: Record actual selected package versions after patch
+          ansible.builtin.command:
+            argv: "{{ ['dpkg-query', '-W', '-f=${Package}=${Version}\n'] + maintain_packages }}"
+          register: maintain_after
+          changed_when: false
+        - name: Record patch outcome
+          ansible.builtin.include_tasks: ../tasks/event.yml
+          vars:
+            maintain_stage: patched
+        - name: Inspect guest reboot requirement
+          ansible.builtin.stat:
+            path: /var/run/reboot-required
+          register: maintain_reboot_required
+        - name: Record recovery start
+          ansible.builtin.include_tasks: ../tasks/event.yml
+          vars:
+            maintain_stage: recovery-started
+        - name: Reboot selected guest when required or explicitly requested
+          ansible.builtin.reboot:
+            reboot_timeout: 180
+          register: maintain_reboot
+          when: maintain_force_reboot | bool or maintain_reboot_required.stat.exists
+        - name: Inject explicit lab-only first-node health failure
+          ansible.builtin.systemd_service:
+            name: fleetops-app
+            state: stopped
+          when: inventory_hostname == maintain_fail_host
+        - name: Require direct readiness before rejoin
+          ansible.builtin.uri:
+            url: "http://{{ ansible_host }}:18081/health"
+            return_content: true
+          delegate_to: "{{ maintain_lb }}"
+          register: maintain_ready
+          until: maintain_ready.status == 200 and maintain_ready.json.node == inventory_hostname
+          retries: 10
+          delay: 2
+        - name: Record direct readiness recovery
+          ansible.builtin.include_tasks: ../tasks/event.yml
+          vars:
+            maintain_stage: ready
+        - name: Re-enable healthy backend for load-balancer health checks
+          ansible.builtin.command:
+            argv: [python3, /opt/fleetops/lbctl.py, enable, "{{ inventory_hostname }}"]
+          delegate_to: "{{ maintain_lb }}"
+          changed_when: true
+        - name: Require load-balancer health before advancing
+          ansible.builtin.command:
+            argv: [python3, /opt/fleetops/lbctl.py, wait-up, "{{ inventory_hostname }}"]
+          delegate_to: "{{ maintain_lb }}"
+          changed_when: false
+        - name: Record completed healthy rejoin
+          ansible.builtin.include_tasks: ../tasks/event.yml
+          vars:
+            maintain_stage: rejoined
+      rescue:
+        - name: Keep failing backend excluded even after a rejoin-gate failure
+          ansible.builtin.command:
+            argv: [python3, /opt/fleetops/lbctl.py, disable, "{{ inventory_hostname }}"]
+          delegate_to: "{{ maintain_lb }}"
+          changed_when: true
+        - name: Preserve failure boundary
+          ansible.builtin.include_tasks: ../tasks/event.yml
+          vars:
+            maintain_stage: failed
+        - name: Abort the whole run without successful rescue masking
+          ansible.builtin.fail:
+            msg: >-
+              {{ inventory_hostname }} failed; backend remains excluded. Next node must not be touched.
+              Repair, verify direct readiness, then explicitly rejoin.

@@ -1,4 +1,5 @@
 """Dependency-free, validated FleetOps demonstration workload."""
+
 import argparse
 from http.server import BaseHTTPRequestHandler, ThreadingHTTPServer
 import json
@@ -10,7 +11,10 @@ def load_config(path):
     required = {"node", "version", "ready", "bind", "port"}
     if set(config) != required or not isinstance(config["ready"], bool):
         raise ValueError("Expected node/version/ready/bind/port; ready must be boolean")
-    if not all(isinstance(config[key], str) and config[key] for key in ("node", "version", "bind")):
+    if not all(
+        isinstance(config[key], str) and config[key]
+        for key in ("node", "version", "bind")
+    ):
         raise ValueError("node, version and bind must be nonempty strings")
     if type(config["port"]) is not int or config["port"] != 18081:
         raise ValueError("Lab application port must be 18081")
@@ -24,7 +28,11 @@ def make_server(config, address=None):
                 status, body = 404, {"error": "not found"}
             else:
                 status = 200 if config["ready"] else 503
-                body = {"node": config["node"], "version": config["version"], "ready": config["ready"]}
+                body = {
+                    "node": config["node"],
+                    "version": config["version"],
+                    "ready": config["ready"],
+                }
             payload = json.dumps(body).encode()
             self.send_response(status)
             self.send_header("Content-Type", "application/json")

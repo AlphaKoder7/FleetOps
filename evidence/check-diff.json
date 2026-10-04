@@ -1,0 +1,6 @@
+{
+  "kind": "real-guest-ansible-check-diff",
+  "exit_status": 0,
+  "zero_predicted_changes_on_all_guests": true,
+  "note": "Supported check/diff simulation; explicit read-only drift inspection remains the drift acceptance gate."
+}
