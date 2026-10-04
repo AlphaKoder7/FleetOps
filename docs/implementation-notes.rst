@@ -1,4 +1,5 @@
-# Implementation choices
+Implementation choices
+======================
 
 Ansible built-in modules handle packages, users, directories, files, templates, services and reboot. UFW has no module in ansible-core: narrowly scoped guest-only argv commands add the lab-subnet SSH/service rules, set incoming policy only if the configuration differs, and enable UFW only when inactive. Read-only command outputs drive change detection. They never run on the controller. UFW command check-mode predictions are not relied on for drift detection.
 
@@ -12,4 +13,4 @@ The user explicitly authorized read-only existing Docker network names/IPAM chec
 
 Guest inventories explicitly select SSH transport; wrappers force pinned host trust and ignore unrelated user SSH profiles without rewriting them. Run configure/repair/rejoin/lifecycle/maintenance sequentially; concurrent operational invocations are outside the supported workflow.
 
-The explicit package-upgrade demo uses read-only `apt-cache policy` and `dpkg-query` argv commands on the drained application guest to preserve repository origins and actual installed versions. All package staging/upgrading uses Ansible apt, with exact names/versions, authenticated repositories and removal protection; only the opt-in demo staging task allows a downgrade of unzip.
+The explicit package-upgrade demo uses read-only ``apt-cache policy`` and ``dpkg-query`` argv commands on the drained application guest to preserve repository origins and actual installed versions. All package staging/upgrading uses Ansible apt, with exact names/versions, authenticated repositories and removal protection; only the opt-in demo staging task allows a downgrade of unzip.
