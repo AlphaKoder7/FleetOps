@@ -17,7 +17,8 @@
   order: sorted
   any_errors_fatal: true
   vars:
-    maintain_packages: [python3-minimal]
+    maintain_package_upgrade_demo: false
+    maintain_packages: "{{ ['unzip'] if maintain_package_upgrade_demo | bool else ['python3-minimal'] }}"
     maintain_force_reboot: false
     maintain_fail_host: ''
     maintain_lb: "{{ groups['load_balancers'][0] }}"
@@ -28,7 +29,7 @@
         that:
           - inventory_hostname in ['fleetops-web-1', 'fleetops-web-2']
           - groups['application_nodes'] | length == 2
-          - maintain_packages == ['python3-minimal']
+          - maintain_packages == (['unzip'] if maintain_package_upgrade_demo | bool else ['python3-minimal'])
     - name: Require alternate application to serve before draining
       ansible.builtin.uri:
         url: "http://{{ hostvars[maintain_other]['ansible_host'] }}:18081/health"
@@ -56,24 +57,51 @@
           ansible.builtin.include_tasks: ../tasks/event.yml
           vars:
             maintain_stage: drained
+        - name: Refresh guest package metadata explicitly
+          ansible.builtin.apt:
+            update_cache: true
+        - name: Preserve available demo package versions and repository origins
+          ansible.builtin.command:
+            argv: [apt-cache, policy, unzip]
+          register: maintain_policy
+          changed_when: false
+          when: maintain_package_upgrade_demo | bool
+        - name: Stage exact Ubuntu release version for the explicit upgrade demo
+          ansible.builtin.apt:
+            name: unzip=6.0-28ubuntu4
+            state: present
+            allow_downgrade: true
+            force_apt_get: true
+            fail_on_autoremove: true
+            install_recommends: false
+          when: maintain_package_upgrade_demo | bool
         - name: Record selected package versions before patch
           ansible.builtin.command:
             argv: "{{ ['dpkg-query', '-W', '-f=${Package}=${Version}\n'] + maintain_packages }}"
           register: maintain_before
           changed_when: false
-        - name: Refresh guest package metadata explicitly
-          ansible.builtin.apt:
-            update_cache: true
+        - name: Require exact staged version before demo upgrade
+          ansible.builtin.assert:
+            that: maintain_before.stdout_lines == ['unzip=6.0-28ubuntu4']
+          when: maintain_package_upgrade_demo | bool
         - name: Upgrade only the configured package set
           ansible.builtin.apt:
-            name: "{{ maintain_packages }}"
-            state: latest
+            name: "{{ ['unzip=6.0-28ubuntu4.1'] if maintain_package_upgrade_demo | bool else maintain_packages }}"
+            state: "{{ 'present' if maintain_package_upgrade_demo | bool else 'latest' }}"
             only_upgrade: true
+            fail_on_autoremove: true
+          register: maintain_patch
         - name: Record actual selected package versions after patch
           ansible.builtin.command:
             argv: "{{ ['dpkg-query', '-W', '-f=${Package}=${Version}\n'] + maintain_packages }}"
           register: maintain_after
           changed_when: false
+        - name: Require actual exact package upgrade for the demo
+          ansible.builtin.assert:
+            that:
+              - maintain_patch.changed
+              - maintain_after.stdout_lines == ['unzip=6.0-28ubuntu4.1']
+          when: maintain_package_upgrade_demo | bool
         - name: Record patch outcome
           ansible.builtin.include_tasks: ../tasks/event.yml
           vars:

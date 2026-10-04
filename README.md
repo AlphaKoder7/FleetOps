@@ -44,6 +44,7 @@ The control machine runs Ansible/probes only. HAProxy serves at its discovered g
 | `make demo` | All real guest drills with evidence and health restoration |
 | `make demo DEMO=drift` | Modified setting + stopped service; prove detection read-only and repair |
 | `make demo DEMO=maintenance` | Rolling forced reboot with continuous HTTP observation |
+| `make demo DEMO=package-upgrade` | Stage and actually upgrade pinned Ubuntu unzip versions while probing |
 | `make demo DEMO=abort` | First-node health failure; prove abort/peer preservation; restore demo fleet |
 | `make demo DEMO=invalid` | Invalid HAProxy candidate rejection; unchanged active configuration/service |
 | `make test` / `make lint` | Portable behavior tests, Python format, Ansible lint/syntax |
@@ -54,6 +55,8 @@ The control machine runs Ansible/probes only. HAProxy serves at its discovered g
 Successful checks return 0; drift/probe detected failures return 1; inspection/operational errors return 2. GNU Make itself generally returns 2 for a failed recipe: use `.venv/bin/python scripts/ops.py check` when scripting the drift distinction. Maintenance errors remain nonzero even after rescue; a failed backend stays excluded for recovery. `make repair` does not silently rejoin deliberately excluded backends: see the runbook.
 
 ## Verified evidence
+
+Measured actual package upgrade and reboot: **678 requests, zero observed failures**, p95 **4.74 ms** over ~135 seconds. Both application guests changed `unzip 6.0-28ubuntu4 → 6.0-28ubuntu4.1` using authenticated Ubuntu packages, with serial drain/readiness/rejoin gates and actual changed boot IDs. `make demo DEMO=package-upgrade` reproduces the deliberately staged upgrade; see [setup and measured evidence](docs/maintenance.md).
 
 Measured rolling reboot: **511 requests, zero observed failures**, p95 **3.22 ms** during the recorded ~102-second window. Each node rebooted; node 1 rejoined before node 2 began. Selected python3-minimal version was unchanged, so no available update is claimed. The deliberate health failure returned 2, preserved node 2, and left node 1 excluded; explicit demo recovery succeeded. These are observed lab windows, not a production availability guarantee.
 

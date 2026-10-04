@@ -1,0 +1,358 @@
+{
+  "kind": "maintenance-package-upgrade",
+  "started_at": "2026-10-04T19:48:38.289205+00:00",
+  "setup": {
+    "package": "unzip",
+    "staged_version": "6.0-28ubuntu4",
+    "target_version": "6.0-28ubuntu4.1",
+    "method": "Authenticated Ubuntu APT; stage release version while drained, then upgrade exact version",
+    "repeat_run": "Explicit demo permits downgrading only unzip during staging"
+  },
+  "events": [
+    {
+      "after": [],
+      "at": "2026-10-04T19:49:25Z",
+      "before": [],
+      "node": "fleetops-web-1",
+      "package_upgrade_demo": true,
+      "packages": [
+        "unzip"
+      ],
+      "rebooted": false,
+      "repository_policy": [],
+      "stage": "drained"
+    },
+    {
+      "after": [
+        "unzip=6.0-28ubuntu4.1"
+      ],
+      "at": "2026-10-04T19:49:49Z",
+      "before": [
+        "unzip=6.0-28ubuntu4"
+      ],
+      "node": "fleetops-web-1",
+      "package_upgrade_demo": true,
+      "packages": [
+        "unzip"
+      ],
+      "rebooted": false,
+      "repository_policy": [
+        "unzip:",
+        "  Installed: (none)",
+        "  Candidate: 6.0-28ubuntu4.1",
+        "  Version table:",
+        "     6.0-28ubuntu4.1 500",
+        "        500 http://archive.ubuntu.com/ubuntu noble-updates/main amd64 Packages",
+        "        500 http://security.ubuntu.com/ubuntu noble-security/main amd64 Packages",
+        "     6.0-28ubuntu4 500",
+        "        500 http://archive.ubuntu.com/ubuntu noble/main amd64 Packages"
+      ],
+      "stage": "patched"
+    },
+    {
+      "after": [
+        "unzip=6.0-28ubuntu4.1"
+      ],
+      "at": "2026-10-04T19:50:13Z",
+      "before": [
+        "unzip=6.0-28ubuntu4"
+      ],
+      "node": "fleetops-web-1",
+      "package_upgrade_demo": true,
+      "packages": [
+        "unzip"
+      ],
+      "rebooted": true,
+      "repository_policy": [
+        "unzip:",
+        "  Installed: (none)",
+        "  Candidate: 6.0-28ubuntu4.1",
+        "  Version table:",
+        "     6.0-28ubuntu4.1 500",
+        "        500 http://archive.ubuntu.com/ubuntu noble-updates/main amd64 Packages",
+        "        500 http://security.ubuntu.com/ubuntu noble-security/main amd64 Packages",
+        "     6.0-28ubuntu4 500",
+        "        500 http://archive.ubuntu.com/ubuntu noble/main amd64 Packages"
+      ],
+      "stage": "ready"
+    },
+    {
+      "after": [
+        "unzip=6.0-28ubuntu4.1"
+      ],
+      "at": "2026-10-04T19:49:52Z",
+      "before": [
+        "unzip=6.0-28ubuntu4"
+      ],
+      "node": "fleetops-web-1",
+      "package_upgrade_demo": true,
+      "packages": [
+        "unzip"
+      ],
+      "rebooted": false,
+      "repository_policy": [
+        "unzip:",
+        "  Installed: (none)",
+        "  Candidate: 6.0-28ubuntu4.1",
+        "  Version table:",
+        "     6.0-28ubuntu4.1 500",
+        "        500 http://archive.ubuntu.com/ubuntu noble-updates/main amd64 Packages",
+        "        500 http://security.ubuntu.com/ubuntu noble-security/main amd64 Packages",
+        "     6.0-28ubuntu4 500",
+        "        500 http://archive.ubuntu.com/ubuntu noble/main amd64 Packages"
+      ],
+      "stage": "recovery-started"
+    },
+    {
+      "after": [
+        "unzip=6.0-28ubuntu4.1"
+      ],
+      "at": "2026-10-04T19:50:18Z",
+      "before": [
+        "unzip=6.0-28ubuntu4"
+      ],
+      "node": "fleetops-web-1",
+      "package_upgrade_demo": true,
+      "packages": [
+        "unzip"
+      ],
+      "rebooted": true,
+      "repository_policy": [
+        "unzip:",
+        "  Installed: (none)",
+        "  Candidate: 6.0-28ubuntu4.1",
+        "  Version table:",
+        "     6.0-28ubuntu4.1 500",
+        "        500 http://archive.ubuntu.com/ubuntu noble-updates/main amd64 Packages",
+        "        500 http://security.ubuntu.com/ubuntu noble-security/main amd64 Packages",
+        "     6.0-28ubuntu4 500",
+        "        500 http://archive.ubuntu.com/ubuntu noble/main amd64 Packages"
+      ],
+      "stage": "rejoined"
+    },
+    {
+      "after": [],
+      "at": "2026-10-04T19:49:20Z",
+      "before": [],
+      "node": "fleetops-web-1",
+      "package_upgrade_demo": true,
+      "packages": [
+        "unzip"
+      ],
+      "rebooted": false,
+      "repository_policy": [],
+      "stage": "started"
+    },
+    {
+      "after": [],
+      "at": "2026-10-04T19:50:26Z",
+      "before": [],
+      "node": "fleetops-web-2",
+      "package_upgrade_demo": true,
+      "packages": [
+        "unzip"
+      ],
+      "rebooted": false,
+      "repository_policy": [],
+      "stage": "drained"
+    },
+    {
+      "after": [
+        "unzip=6.0-28ubuntu4.1"
+      ],
+      "at": "2026-10-04T19:50:55Z",
+      "before": [
+        "unzip=6.0-28ubuntu4"
+      ],
+      "node": "fleetops-web-2",
+      "package_upgrade_demo": true,
+      "packages": [
+        "unzip"
+      ],
+      "rebooted": false,
+      "repository_policy": [
+        "unzip:",
+        "  Installed: (none)",
+        "  Candidate: 6.0-28ubuntu4.1",
+        "  Version table:",
+        "     6.0-28ubuntu4.1 500",
+        "        500 http://archive.ubuntu.com/ubuntu noble-updates/main amd64 Packages",
+        "        500 http://security.ubuntu.com/ubuntu noble-security/main amd64 Packages",
+        "     6.0-28ubuntu4 500",
+        "        500 http://archive.ubuntu.com/ubuntu noble/main amd64 Packages"
+      ],
+      "stage": "patched"
+    },
+    {
+      "after": [
+        "unzip=6.0-28ubuntu4.1"
+      ],
+      "at": "2026-10-04T19:51:19Z",
+      "before": [
+        "unzip=6.0-28ubuntu4"
+      ],
+      "node": "fleetops-web-2",
+      "package_upgrade_demo": true,
+      "packages": [
+        "unzip"
+      ],
+      "rebooted": true,
+      "repository_policy": [
+        "unzip:",
+        "  Installed: (none)",
+        "  Candidate: 6.0-28ubuntu4.1",
+        "  Version table:",
+        "     6.0-28ubuntu4.1 500",
+        "        500 http://archive.ubuntu.com/ubuntu noble-updates/main amd64 Packages",
+        "        500 http://security.ubuntu.com/ubuntu noble-security/main amd64 Packages",
+        "     6.0-28ubuntu4 500",
+        "        500 http://archive.ubuntu.com/ubuntu noble/main amd64 Packages"
+      ],
+      "stage": "ready"
+    },
+    {
+      "after": [
+        "unzip=6.0-28ubuntu4.1"
+      ],
+      "at": "2026-10-04T19:50:58Z",
+      "before": [
+        "unzip=6.0-28ubuntu4"
+      ],
+      "node": "fleetops-web-2",
+      "package_upgrade_demo": true,
+      "packages": [
+        "unzip"
+      ],
+      "rebooted": false,
+      "repository_policy": [
+        "unzip:",
+        "  Installed: (none)",
+        "  Candidate: 6.0-28ubuntu4.1",
+        "  Version table:",
+        "     6.0-28ubuntu4.1 500",
+        "        500 http://archive.ubuntu.com/ubuntu noble-updates/main amd64 Packages",
+        "        500 http://security.ubuntu.com/ubuntu noble-security/main amd64 Packages",
+        "     6.0-28ubuntu4 500",
+        "        500 http://archive.ubuntu.com/ubuntu noble/main amd64 Packages"
+      ],
+      "stage": "recovery-started"
+    },
+    {
+      "after": [
+        "unzip=6.0-28ubuntu4.1"
+      ],
+      "at": "2026-10-04T19:51:24Z",
+      "before": [
+        "unzip=6.0-28ubuntu4"
+      ],
+      "node": "fleetops-web-2",
+      "package_upgrade_demo": true,
+      "packages": [
+        "unzip"
+      ],
+      "rebooted": true,
+      "repository_policy": [
+        "unzip:",
+        "  Installed: (none)",
+        "  Candidate: 6.0-28ubuntu4.1",
+        "  Version table:",
+        "     6.0-28ubuntu4.1 500",
+        "        500 http://archive.ubuntu.com/ubuntu noble-updates/main amd64 Packages",
+        "        500 http://security.ubuntu.com/ubuntu noble-security/main amd64 Packages",
+        "     6.0-28ubuntu4 500",
+        "        500 http://archive.ubuntu.com/ubuntu noble/main amd64 Packages"
+      ],
+      "stage": "rejoined"
+    },
+    {
+      "after": [],
+      "at": "2026-10-04T19:50:20Z",
+      "before": [],
+      "node": "fleetops-web-2",
+      "package_upgrade_demo": true,
+      "packages": [
+        "unzip"
+      ],
+      "rebooted": false,
+      "repository_policy": [],
+      "stage": "started"
+    }
+  ],
+  "per_node": {
+    "fleetops-web-1": {
+      "stages": [
+        "drained",
+        "patched",
+        "ready",
+        "recovery-started",
+        "rejoined",
+        "started"
+      ],
+      "package_before": [
+        "unzip=6.0-28ubuntu4"
+      ],
+      "package_after": [
+        "unzip=6.0-28ubuntu4.1"
+      ],
+      "maintenance_seconds": 58.0,
+      "recovery_seconds": 21.0
+    },
+    "fleetops-web-2": {
+      "stages": [
+        "drained",
+        "patched",
+        "ready",
+        "recovery-started",
+        "rejoined",
+        "started"
+      ],
+      "package_before": [
+        "unzip=6.0-28ubuntu4"
+      ],
+      "package_after": [
+        "unzip=6.0-28ubuntu4.1"
+      ],
+      "maintenance_seconds": 64.0,
+      "recovery_seconds": 21.0
+    }
+  },
+  "boot_before": {
+    "fleetops-web-1": "cea9aa79-8f22-493c-b41b-d5cc3c66372c",
+    "fleetops-web-2": "23bcd294-094a-4f71-90b8-ba27bb558548"
+  },
+  "boot_after": {
+    "fleetops-web-1": "c7601d9c-9ed1-42cb-893f-063fbd26fa7b",
+    "fleetops-web-2": "f16ecd53-d032-4499-9328-9c0934de0a89"
+  },
+  "backend_after": {
+    "fleetops-web-1": {
+      "status": "UP",
+      "active": 0,
+      "queued": 0
+    },
+    "fleetops-web-2": {
+      "status": "UP",
+      "active": 0,
+      "queued": 0
+    }
+  },
+  "exit_status": 0,
+  "probe": {
+    "schema_version": 1,
+    "window_start": "2026-10-04T19:49:12.838291+00:00",
+    "window_end": "2026-10-04T19:51:28.304125+00:00",
+    "requests": 678,
+    "failures": 0,
+    "failure_rate": 0.0,
+    "p95_latency_ms": 4.742020000776392,
+    "per_node": {
+      "fleetops-web-1": 352,
+      "fleetops-web-2": 326
+    },
+    "interval_seconds": 0.2,
+    "timeout_seconds": 2.0,
+    "method": "Sequential host HTTP GET; nearest-rank p95; failures include HTTP, connection, timeout and invalid identity/schema"
+  },
+  "restored_at": "2026-10-04T19:52:02.933686+00:00",
+  "final_status": "healthy"
+}

@@ -8,6 +8,8 @@
 | drift-drill.json | Two intentional faults detected read-only, before/after selected snapshots, repair and clean report |
 | invalid-candidate.json | Actual HAProxy validator rejection and unchanged active file/process/service observations |
 | maintenance-reboot.json + .jsonl | Events, actual package versions, changed guest boot IDs, measured requests and summary |
+| maintenance-package-upgrade.json + .jsonl | Actual unzip release-to-security upgrade on both guests; repository origins, before/after dpkg versions, serial drain/reboot/rejoin and 678 raw HTTP observations |
+| maintenance-validation.json | Post-change portable/lint checks, real-VM integration and final clean drift after the actual upgrade |
 | maintenance-abort.json + .jsonl | Fatal first-node failure, excluded backend, unchanged peer fingerprint and explicit recovery |
 | rebuild.json | Scoped verified teardown and clean replacement resource identity (status inside artifact) |
 | final-drift.json | Final rebuilt-fleet explicit managed-state report, all hosts clean |
@@ -16,6 +18,6 @@
 
 Portable tests recompute probe summaries from raw JSONL and check peer-only serving inside observed drain/recovery windows. These checks do not themselves create VMs. Local integration/drill logs and ownership/SSH/runtime material stay ignored in .runtime. Simulated incident write-ups are in docs/incidents.
 
-Timings are actual UTC observations, not fabricated portfolio values. Event boundaries have one-second resolution; probe request timestamps/latencies are finer. Zero observed failures is limited to the recorded sampling windows. Package versions did not change in the measured demonstrations; no available upgrade is claimed. Host/LB failure and long-running requests are not proven by short GET probes.
+Timings are actual UTC observations, not fabricated portfolio values. Event boundaries have one-second resolution; probe request timestamps/latencies are finer. Zero observed failures is limited to the recorded sampling windows. The original reboot/abort demonstrations recorded unchanged python3-minimal versions. The separate package-upgrade demo deliberately stages unzip 6.0-28ubuntu4, then actually upgrades to 6.0-28ubuntu4.1 on each drained guest; it records 678 requests, 0 observed failures and p95 4.74 ms. This is controlled lab setup, not a naturally pending production update. Host/LB failure and long-running requests are not proven by short GET probes.
 
 No hosted CI execution, external publishing or AWS validation has occurred. Repeated demonstrations archive their prior summary/raw files in evidence/history. All examples use FleetOps guest identity only; personal host routes/credentials are excluded.

@@ -5,6 +5,8 @@
       {{ {'node': inventory_hostname, 'stage': maintain_stage,
           'at': now(utc=true, fmt='%Y-%m-%dT%H:%M:%SZ'),
           'packages': maintain_packages,
+          'package_upgrade_demo': maintain_package_upgrade_demo | bool,
+          'repository_policy': maintain_policy.stdout_lines | default([]),
           'rebooted': maintain_reboot.rebooted | default(false),
           'before': maintain_before.stdout_lines | default([]),
           'after': maintain_after.stdout_lines | default([])} | to_nice_json }}

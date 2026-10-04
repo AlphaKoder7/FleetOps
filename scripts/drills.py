@@ -160,9 +160,13 @@ def event_summary(events):
     return result
 
 
-def maintenance_drill(fail=False):
+def maintenance_drill(fail=False, package_upgrade=False):
     ops.inventory_guard()
-    label = "maintenance-abort" if fail else "maintenance-reboot"
+    label = (
+        "maintenance-package-upgrade"
+        if package_upgrade
+        else "maintenance-abort" if fail else "maintenance-reboot"
+    )
     archive_previous(label)
     report = {"kind": label, "started_at": datetime.now(timezone.utc).isoformat()}
     call("verify", label=label + "-preflight")
@@ -188,7 +192,9 @@ def maintenance_drill(fail=False):
         time.sleep(2)
         call(
             "maintain",
-            ["--force-reboot"] + (["--fail-first"] if fail else []),
+            ["--force-reboot"]
+            + (["--fail-first"] if fail else [])
+            + (["--package-upgrade-demo"] if package_upgrade else []),
             expected=2 if fail else 0,
             label=label,
         )
@@ -236,6 +242,21 @@ def maintenance_drill(fail=False):
                 raise RuntimeError("Serial maintenance boundaries overlap")
             if any(before[name] == after[name] for name in local.NAMES[1:]):
                 raise RuntimeError("Forced reboot did not change each guest boot ID")
+        if package_upgrade:
+            for node, measured in event_summary(events).items():
+                if measured["package_before"] != ["unzip=6.0-28ubuntu4"] or measured[
+                    "package_after"
+                ] != ["unzip=6.0-28ubuntu4.1"]:
+                    raise RuntimeError(
+                        f"Actual package upgrade not demonstrated on {node}"
+                    )
+            report["setup"] = {
+                "package": "unzip",
+                "staged_version": "6.0-28ubuntu4",
+                "target_version": "6.0-28ubuntu4.1",
+                "method": "Authenticated Ubuntu APT; stage release version while drained, then upgrade exact version",
+                "repeat_run": "Explicit demo permits downgrading only unzip during staging",
+            }
         report.update(
             events=events,
             per_node=event_summary(events),
@@ -343,7 +364,8 @@ def invalid_drill():
 def main():
     parser = argparse.ArgumentParser(description=__doc__)
     parser.add_argument(
-        "action", choices=["drift", "maintenance", "abort", "invalid", "all"]
+        "action",
+        choices=["drift", "maintenance", "package-upgrade", "abort", "invalid", "all"],
     )
     args = parser.parse_args()
     try:
@@ -352,6 +374,8 @@ def main():
             maintenance_drill()
             maintenance_drill(fail=True)
             invalid_drill()
+        elif args.action == "package-upgrade":
+            maintenance_drill(package_upgrade=True)
         elif args.action == "invalid":
             invalid_drill()
         elif args.action == "drift":

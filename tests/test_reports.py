@@ -105,12 +105,45 @@ class MaintenanceReportTests(unittest.TestCase):
 
 
 class RecordedEvidenceTests(unittest.TestCase):
+    def test_package_upgrade_evidence_proves_both_versions_and_serial_reboots(self):
+        import json
+
+        root = Path(__file__).resolve().parents[1]
+        path = root / "evidence/maintenance-package-upgrade.json"
+        if not path.exists():
+            self.skipTest("Real guest upgrade evidence not collected yet")
+        report = json.loads(path.read_text())
+        self.assertEqual(report["exit_status"], 0)
+        self.assertEqual(report["final_status"], "healthy")
+        stages = {}
+        for node in ["fleetops-web-1", "fleetops-web-2"]:
+            measured = report["per_node"][node]
+            self.assertEqual(measured["package_before"], ["unzip=6.0-28ubuntu4"])
+            self.assertEqual(measured["package_after"], ["unzip=6.0-28ubuntu4.1"])
+            self.assertNotEqual(report["boot_before"][node], report["boot_after"][node])
+            self.assertEqual(report["backend_after"][node]["status"], "UP")
+            stages[node] = {
+                e["stage"]: e for e in report["events"] if e["node"] == node
+            }
+            policy = "\n".join(stages[node]["patched"]["repository_policy"])
+            self.assertIn("6.0-28ubuntu4.1", policy)
+            self.assertIn("noble/main", policy)
+            self.assertIn("noble-security/main", policy)
+        self.assertLessEqual(
+            stages["fleetops-web-1"]["rejoined"]["at"],
+            stages["fleetops-web-2"]["started"]["at"],
+        )
+
     def test_measured_probe_summaries_match_preserved_raw_observations(self):
         import json
         import probe
 
         root = Path(__file__).resolve().parents[1]
-        for label in ["maintenance-reboot", "maintenance-abort"]:
+        for label in [
+            "maintenance-reboot",
+            "maintenance-abort",
+            "maintenance-package-upgrade",
+        ]:
             path = root / f"evidence/{label}.json"
             if not path.exists():
                 continue

@@ -11,3 +11,5 @@ HAProxy has no ansible-core runtime-socket module. The root-only lbctl Python he
 The user explicitly authorized read-only existing Docker network names/IPAM checks. The local Unix Docker socket is pinned; neither containers nor Docker/DevOps Lab state are queried. No existing networks are modified.
 
 Guest inventories explicitly select SSH transport; wrappers force pinned host trust and ignore unrelated user SSH profiles without rewriting them. Run configure/repair/rejoin/lifecycle/maintenance sequentially; concurrent operational invocations are outside the supported workflow.
+
+The explicit package-upgrade demo uses read-only `apt-cache policy` and `dpkg-query` argv commands on the drained application guest to preserve repository origins and actual installed versions. All package staging/upgrading uses Ansible apt, with exact names/versions, authenticated repositories and removal protection; only the opt-in demo staging task allows a downgrade of unzip.

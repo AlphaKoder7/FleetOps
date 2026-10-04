@@ -1,0 +1,56 @@
+{
+  "kind": "actual-package-upgrade-follow-up-validation",
+  "recorded_at": "2026-10-04T19:55:31.192994+00:00",
+  "checks": [
+    {
+      "command": "make demo DEMO=package-upgrade",
+      "exit_status": 0,
+      "evidence": "maintenance-package-upgrade.json",
+      "raw_requests": "maintenance-package-upgrade.jsonl"
+    },
+    {
+      "command": "make test",
+      "exit_status": 0,
+      "portable_tests_passed": 25,
+      "includes": "Recomputed raw HTTP summaries, peer-only serving during drained intervals, exact upgraded versions, serial changed boot IDs and Ubuntu repository origins"
+    },
+    {
+      "command": "make lint",
+      "exit_status": 0,
+      "includes": "13 Python files formatted; Ansible production-profile lint and all playbook syntax checks"
+    },
+    {
+      "command": "make integration",
+      "exit_status": 0,
+      "evidence": "local-integration.json"
+    },
+    {
+      "command": "git diff --check",
+      "exit_status": 0
+    }
+  ],
+  "idempotency": {
+    "fleetops-lb": {
+      "changed": 0,
+      "unreachable": 0,
+      "failed": 0
+    },
+    "fleetops-web-1": {
+      "changed": 0,
+      "unreachable": 0,
+      "failed": 0
+    },
+    "fleetops-web-2": {
+      "changed": 0,
+      "unreachable": 0,
+      "failed": 0
+    }
+  },
+  "final_drift_status": "clean",
+  "aws_provisioning": "disabled; no cloud operations performed",
+  "running_guests": [
+    "fleetops-lb",
+    "fleetops-web-1",
+    "fleetops-web-2"
+  ]
+}

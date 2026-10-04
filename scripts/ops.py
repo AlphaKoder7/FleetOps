@@ -136,8 +136,13 @@ def main():
     parser.add_argument("--snapshot-label", choices=["before", "after"])
     parser.add_argument("--force-reboot", action="store_true")
     parser.add_argument("--fail-first", action="store_true")
+    parser.add_argument("--package-upgrade-demo", action="store_true")
     args = parser.parse_args()
     variables = {}
+    if args.package_upgrade_demo:
+        if args.action != "maintain":
+            parser.error("--package-upgrade-demo requires maintain")
+        variables["maintain_package_upgrade_demo"] = True
     if args.snapshot_label:
         variables["snapshot_label"] = args.snapshot_label
     if args.force_reboot:
