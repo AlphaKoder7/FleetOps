@@ -1,0 +1,43 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="880" height="440" viewBox="0 0 880 440">
+  <defs>
+    <marker id="arrow" markerWidth="8" markerHeight="8" refX="7" refY="4" orient="auto">
+      <path d="M0,0 L8,4 L0,8 Z" fill="#475569"/>
+    </marker>
+    <marker id="control" markerWidth="8" markerHeight="8" refX="7" refY="4" orient="auto">
+      <path d="M0,0 L8,4 L0,8 Z" fill="#2563eb"/>
+    </marker>
+  </defs>
+  <rect width="880" height="440" rx="16" fill="#f8fafc"/>
+  <g font-family="Arial,Helvetica,sans-serif">
+    <rect x="285" y="25" width="310" height="85" rx="12" fill="#dbeafe" stroke="#2563eb" stroke-width="2"/>
+    <text x="440" y="56" text-anchor="middle" font-size="20" font-weight="bold" fill="#0f172a">Linux controller</text>
+    <text x="440" y="83" text-anchor="middle" font-size="15" fill="#334155">Ansible · lifecycle scripts · HTTP probes</text>
+
+    <rect x="65" y="170" width="750" height="245" rx="14" fill="#fff" stroke="#94a3b8" stroke-width="2" stroke-dasharray="7 5"/>
+    <text x="88" y="198" font-size="15" fill="#64748b">Dedicated libvirt NAT network · three Ubuntu VMs</text>
+
+    <rect x="310" y="215" width="260" height="65" rx="10" fill="#e0f2fe" stroke="#0284c7" stroke-width="2"/>
+    <text x="440" y="242" text-anchor="middle" font-size="18" font-weight="bold" fill="#0f172a">HAProxy load balancer</text>
+    <text x="440" y="264" text-anchor="middle" font-size="14" fill="#334155">fleetops-lb · port 18080</text>
+
+    <rect x="120" y="330" width="270" height="65" rx="10" fill="#dcfce7" stroke="#16a34a" stroke-width="2"/>
+    <text x="255" y="357" text-anchor="middle" font-size="18" font-weight="bold" fill="#0f172a">Application node 1</text>
+    <text x="255" y="380" text-anchor="middle" font-size="14" fill="#334155">fleetops-web-1 · systemd · 18081</text>
+
+    <rect x="490" y="330" width="270" height="65" rx="10" fill="#dcfce7" stroke="#16a34a" stroke-width="2"/>
+    <text x="625" y="357" text-anchor="middle" font-size="18" font-weight="bold" fill="#0f172a">Application node 2</text>
+    <text x="625" y="380" text-anchor="middle" font-size="14" fill="#334155">fleetops-web-2 · systemd · 18081</text>
+
+    <path d="M440 110 L440 213" fill="none" stroke="#2563eb" stroke-width="2" marker-end="url(#control)"/>
+    <text x="453" y="144" font-size="14" fill="#2563eb">HTTP probes + management</text>
+
+    <path d="M320 110 C160 125 100 230 160 327" fill="none" stroke="#2563eb" stroke-width="2" stroke-dasharray="6 4" marker-end="url(#control)"/>
+    <path d="M560 110 C720 125 780 230 720 327" fill="none" stroke="#2563eb" stroke-width="2" stroke-dasharray="6 4" marker-end="url(#control)"/>
+    <text x="90" y="146" font-size="14" fill="#2563eb">Ansible / SSH</text>
+    <text x="700" y="146" font-size="14" fill="#2563eb">Ansible / SSH</text>
+
+    <path d="M390 280 L290 327" fill="none" stroke="#475569" stroke-width="2" marker-end="url(#arrow)"/>
+    <path d="M490 280 L590 327" fill="none" stroke="#475569" stroke-width="2" marker-end="url(#arrow)"/>
+    <text x="440" y="309" text-anchor="middle" font-size="14" fill="#475569">HTTP routing + health checks</text>
+  </g>
+</svg>

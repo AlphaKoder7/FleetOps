@@ -1,101 +1,192 @@
 FleetOps
 ========
 
-Ansible operations toolkit for a three-VM Ubuntu 24.04 lab: non-root systemd workload, HAProxy, read-only drift detection, targeted repair and health-gated rolling maintenance. **Local validation is complete**, including scoped teardown/clean rebuild, real package upgrades under HTTP probing and real-VM integration. **AWS validation remains pending and provisioning is disabled**; cloud deployment is a separate follow-on.
+.. image:: https://github.com/AlphaKoder7/FleetOps/actions/workflows/ci.yml/badge.svg
+   :target: https://github.com/AlphaKoder7/FleetOps/actions/workflows/ci.yml
+   :alt: Portable checks
 
-Setup
------
+Linux fleet automation with Ansible, Python, systemd and HAProxy.
 
-Use a Linux x86_64 controller with Python 3.12+, Git, Make, KVM/libvirt, cloud-image-utils and virt-install. Initial budget: 3 × 1 vCPU / 1 GiB / 8 GiB sparse guest disks, plus verified base image/cache. Doctor checks available memory and disk before creation. No GPU use, containers or localhost managed-host substitutes.
+FleetOps demonstrates how to keep an application serving requests while its servers undergo maintenance, and how to detect and repair configuration drift. It uses three Ubuntu virtual machines: a load balancer and two application servers.
 
-For missing virtualization packages, run in a host terminal:
+**Local implementation and validation are complete.** AWS deployment remains a future extension.
 
-.. code:: sh
+Verified results
+----------------
+
+.. list-table::
+   :header-rows: 1
+   :widths: 35 65
+
+   * - Check
+     - Observed result
+   * - Actual package upgrades and reboots
+     - Both application nodes upgraded ``unzip`` from ``6.0-28ubuntu4`` to ``6.0-28ubuntu4.1``. Across 678 sampled HTTP requests, no failures were observed; p95 latency was 4.74 ms over approximately 135 seconds.
+   * - Rolling reboot
+     - Both application nodes rebooted sequentially. Across 511 sampled requests, no failures were observed; p95 latency was 3.22 ms.
+   * - Configuration drift
+     - A changed application setting and a stopped service were detected without modifying either fault. Targeted repair restored a clean state.
+   * - Failed maintenance
+     - A first-node health failure stopped the run, kept that backend excluded and preserved the second node.
+   * - Invalid configuration
+     - HAProxy rejected an invalid candidate before replacing its active configuration.
+   * - Repeatability
+     - Zero-change configuration, graceful stop/start, scoped teardown and clean rebuild passed.
+   * - Automated checks
+     - 25 portable tests, formatting, Ansible lint/syntax checks and real-VM integration passed.
+
+These are measured local lab results. Request counts and latency describe the recorded sampling windows, rather than a production availability guarantee. The package-upgrade exercise deliberately stages an older authenticated Ubuntu package version before upgrading it.
+
+Raw observations and summaries are available in the `evidence directory <evidence/README.rst>`_.
+
+Architecture
+------------
+
+.. image:: docs/architecture.svg
+   :alt: A Linux controller manages one HAProxy VM and two application VMs through Ansible. HAProxy routes HTTP requests to the two application VMs.
+
+The controller runs Ansible, lifecycle scripts and HTTP probes. A dedicated libvirt NAT network connects the three guests. HAProxy listens on port 18080; application services listen on port 18081 and run as a non-root systemd user.
+
+Guest addresses are discovered automatically. Ansible renders Jinja templates with each guest's settings to generate application, systemd and HAProxy configuration.
+
+Rolling maintenance follows this sequence:
+
+1. Confirm the other application node is healthy.
+2. Drain the selected backend and wait for active requests.
+3. Update the configured package set and reboot when required.
+4. Verify direct readiness and load-balancer health.
+5. Rejoin the backend before proceeding to the next node.
+
+A failed gate stops the sequence and leaves the affected backend excluded.
+
+Quick start
+-----------
+
+Requirements: a Linux x86_64 host, Python 3.12+, Git, Make, KVM/libvirt, cloud-image-utils and virt-install. Initial guest allocation is three VMs, each with 1 vCPU, 1 GiB RAM and an 8 GiB sparse disk, plus the base image. ``make doctor`` checks available resources and prerequisites.
+
+On an Ubuntu-based host, install missing prerequisites:
+
+.. code-block:: bash
 
    sudo apt-get update
-   sudo apt-get install qemu-kvm libvirt-daemon-system libvirt-clients virtinst cloud-image-utils cpu-checker python3-venv
+   sudo apt-get install git make python3-venv qemu-kvm libvirt-daemon-system libvirt-clients virtinst cloud-image-utils cpu-checker
    sudo usermod -aG libvirt,kvm "$USER"
 
-Log out/in, then ``kvm-ok`` and ``virsh -c qemu:///system uri``. Existing sessions can use the configured libvirt group via the script's ``sg`` subprocess; no password is collected. Do not restart host services globally.
+Log out and back in after adding group membership, then check:
 
-From this checkout:
+.. code-block:: bash
 
-.. code:: sh
+   kvm-ok
+   virsh -c qemu:///system uri
 
+Clone and start the project:
+
+.. code-block:: bash
+
+   git clone https://github.com/AlphaKoder7/FleetOps.git
+   cd FleetOps
    make setup
    make doctor
-   make test
-   make lint
    make up
    make configure
    make verify
    make drift-check
 
-Run host/guest operations outside restricted sandboxes or authorize access when prompted. Portable tests/lint require no KVM. Python packages stay in .venv; requirements-dev.lock.txt pins the verified environment. First ``up`` downloads the official HTTPS cloud image and verifies SHA256, checks host routes/libvirt networks/**Docker network IPAM only**, chooses an unused subnet, creates fleetops-net and an ownership-tagged storage pool, then bootstraps management access. No containers, existing networks or DevOps Lab resources are changed. If Docker is installed, local socket access is required for its network conflict check.
+Python dependencies are installed in ``.venv`` using the recorded lock file. The first startup downloads and checksum-verifies the Ubuntu cloud image, checks network conflicts, creates project-owned resources and waits for cloud-init and SSH readiness.
 
-The control machine runs Ansible/probes only. HAProxy serves at its discovered guest address on 18080; applications use 18081. Guest firewall rules permit SSH/service traffic only from the lab subnet. SSH keys and pinned host trust are dedicated to this project; guest transport is explicit and unrelated SSH profiles are ignored. IPs are discovered through DHCP, recorded in ignored inventory, and never hardcoded into operational playbooks.
+If Docker is installed, its local socket must be accessible for the read-only network subnet check. Existing containers and networks are not modified.
 
-Operations
-----------
+Run the demonstrations
+----------------------
 
-+-------------------------------------------+---------------------------------------------------------------------------------------------------------+
-| Command                                   | Behavior                                                                                                |
-+===========================================+=========================================================================================================+
-| ``make doctor``                           | Read-only host prerequisites, port/routes/libvirt/Docker-IPAM checks                                    |
-+-------------------------------------------+---------------------------------------------------------------------------------------------------------+
-| ``make up``                               | Create/start recorded fleet; preserve existing UUIDs/disks; discover IPs and wait for cloud-init/SSH    |
-+-------------------------------------------+---------------------------------------------------------------------------------------------------------+
-| ``make configure``                        | Validated baseline/application/HAProxy roles; no metadata refresh in idempotency pass                   |
-+-------------------------------------------+---------------------------------------------------------------------------------------------------------+
-| ``make verify``                           | Direct readiness/identity and HAProxy distribution across both nodes                                    |
-+-------------------------------------------+---------------------------------------------------------------------------------------------------------+
-| ``make drift-check``                      | Explicit managed files/modes/packages/services; JSON plus readable counts                               |
-+-------------------------------------------+---------------------------------------------------------------------------------------------------------+
-| ``make repair``                           | Apply supported configuration repair and verify                                                         |
-+-------------------------------------------+---------------------------------------------------------------------------------------------------------+
-| ``make maintain``                         | Drain, patch explicit package set, required reboot, health-gated rejoin; serial application guests only |
-+-------------------------------------------+---------------------------------------------------------------------------------------------------------+
-| ``make maintain OPS_ARGS=--force-reboot`` | Explicit lab guest reboot exercise                                                                      |
-+-------------------------------------------+---------------------------------------------------------------------------------------------------------+
-| ``make demo``                             | All real guest drills with evidence and health restoration                                              |
-+-------------------------------------------+---------------------------------------------------------------------------------------------------------+
-| ``make demo DEMO=drift``                  | Modified setting + stopped service; prove detection read-only and repair                                |
-+-------------------------------------------+---------------------------------------------------------------------------------------------------------+
-| ``make demo DEMO=maintenance``            | Rolling forced reboot with continuous HTTP observation                                                  |
-+-------------------------------------------+---------------------------------------------------------------------------------------------------------+
-| ``make demo DEMO=package-upgrade``        | Stage and actually upgrade pinned Ubuntu unzip versions while probing                                   |
-+-------------------------------------------+---------------------------------------------------------------------------------------------------------+
-| ``make demo DEMO=abort``                  | First-node health failure; prove abort/peer preservation; restore demo fleet                            |
-+-------------------------------------------+---------------------------------------------------------------------------------------------------------+
-| ``make demo DEMO=invalid``                | Invalid HAProxy candidate rejection; unchanged active configuration/service                             |
-+-------------------------------------------+---------------------------------------------------------------------------------------------------------+
-| ``make test`` / ``make lint``             | Portable behavior tests, Python format, Ansible lint/syntax                                             |
-+-------------------------------------------+---------------------------------------------------------------------------------------------------------+
-| ``make integration``                      | Real guest reachability/health/clean drift/zero-change configuration                                    |
-+-------------------------------------------+---------------------------------------------------------------------------------------------------------+
-| ``make down``                             | Gracefully stop recorded guests, preserve disks                                                         |
-+-------------------------------------------+---------------------------------------------------------------------------------------------------------+
-| ``make destroy``                          | Verify UUID/pool-path/volume ownership, remove exactly FleetOps resources, verify absence               |
-+-------------------------------------------+---------------------------------------------------------------------------------------------------------+
+.. code-block:: bash
 
-Successful checks return 0; drift/probe detected failures return 1; inspection/operational errors return 2. GNU Make itself generally returns 2 for a failed recipe: use ``.venv/bin/python scripts/ops.py check`` when scripting the drift distinction. Maintenance errors remain nonzero even after rescue; a failed backend stays excluded for recovery. ``make repair`` does not silently rejoin deliberately excluded backends: see the runbook.
+   make demo DEMO=drift
+   make demo DEMO=package-upgrade
+   make demo DEMO=abort
+   make demo DEMO=invalid
 
-Verified evidence
------------------
+The package-upgrade demonstration also performs rolling guest reboots. Its pinned versions must remain available from the configured Ubuntu repositories; the exercise fails explicitly if they are unavailable.
 
-Measured actual package upgrade and reboot: **678 requests, zero observed failures**, p95 **4.74 ms** over ~135 seconds. Both application guests changed ``unzip 6.0-28ubuntu4 → 6.0-28ubuntu4.1`` using authenticated Ubuntu packages, with serial drain/readiness/rejoin gates and actual changed boot IDs. ``make demo DEMO=package-upgrade`` reproduces the deliberately staged upgrade; see `setup and measured evidence <docs/maintenance.rst>`__.
+Each demonstration records evidence and verifies recovery. Detailed procedures are in the `maintenance guide <docs/maintenance.rst>`_ and `runbook <docs/runbook.rst>`_.
 
-Measured rolling reboot: **511 requests, zero observed failures**, p95 **3.22 ms** during the recorded ~102-second window. Each node rebooted; node 1 rejoined before node 2 began. Selected python3-minimal version was unchanged, so no available update is claimed. The deliberate health failure returned 2, preserved node 2, and left node 1 excluded; explicit demo recovery succeeded. These are observed lab windows, not a production availability guarantee.
+Common commands
+---------------
 
-See `evidence <evidence/README.rst>`__, `architecture <docs/architecture.rst>`__, `runbook <docs/runbook.rst>`__, `managed-state contract <docs/managed-state.rst>`__, `maintenance <docs/maintenance.rst>`__, `probing <docs/probing.rst>`__, `implementation exceptions <docs/implementation-notes.rst>`__ and `simulated incidents <docs/incidents>`__. CI runs portable checks only; hosted CI does not claim real KVM integration.
+.. list-table::
+   :header-rows: 1
+   :widths: 40 60
 
-Isolation and limits
+   * - Command
+     - Purpose
+   * - ``make doctor``
+     - Inspect prerequisites, resources and network conflicts.
+   * - ``make up`` / ``make configure``
+     - Create or start the fleet, then apply configuration.
+   * - ``make verify`` / ``make drift-check``
+     - Check application health and report managed-state drift.
+   * - ``make repair``
+     - Repair supported drift and verify health.
+   * - ``make maintain``
+     - Perform health-gated rolling maintenance.
+   * - ``make test`` / ``make lint``
+     - Run portable tests, formatting and Ansible checks.
+   * - ``make integration``
+     - Validate the configured real-VM fleet and idempotency.
+   * - ``make down``
+     - Stop the guests while preserving their disks.
+   * - ``make destroy``
+     - Remove and verify absence of recorded project resources.
+
+Testing and evidence
 --------------------
 
-Never delete .runtime/fleet.json before teardown; it is the ownership record. Runtime state/keys, generated inventory, images/disks and Terraform state are untracked. Volumes live only in this project's ``fleetops-<UUID>`` pool under /var/lib/libvirt/images, created through libvirt. No existing storage/network is adopted. Repeated drills retain previous raw probe/summary artifacts in evidence/history.
+GitHub Actions runs portable tests and lint/syntax checks. Real-VM integration and maintenance demonstrations run separately on a KVM-capable host.
 
-Initial scope is Ubuntu 24.04/x86_64 only. The host and load balancer are single points of failure. Short GET observations do not prove long-lived request behavior or arbitrary load. Drift is bounded to documented selected state. There is no automatic package/OS rollback. Loss of the manifest requires careful ownership recovery, not broad cleanup.
+Evidence includes timestamped HTTP observations, package versions, reboot identities, maintenance boundaries, drift snapshots and teardown/rebuild results. Two `simulated incident reports <docs/incidents>`_ describe the observed drift and failed-maintenance exercises.
 
-AWS code preparation/validation is a separate follow-on; no apply or cloud credentials are used by any local command. DevOps Lab remains isolated.
+Repository layout
+-----------------
 
-Official references: `Ubuntu libvirt <https://ubuntu.com/server/docs/how-to/virtualisation/libvirt/>`__, `cloud images <https://cloud-images.ubuntu.com/noble/current/>`__, `Ansible <https://docs.ansible.com/projects/ansible/latest/>`__, `HAProxy socket/stats <https://www.haproxy.org/download/2.8/doc/management.txt>`__.
+.. list-table::
+   :header-rows: 1
+   :widths: 30 70
+
+   * - Directory
+     - Contents
+   * - ``ansible/``
+     - Roles, templates, inventory example and operational playbooks.
+   * - ``app/``
+     - Small HTTP workload with health and node-identity responses.
+   * - ``scripts/``
+     - VM lifecycle, operational wrappers, probing and evidence collection.
+   * - ``tests/``
+     - Portable behaviour and evidence-validation tests.
+   * - ``infra/local/``
+     - Local infrastructure documentation.
+   * - ``infra/aws/``
+     - Pending cloud extension notes.
+   * - ``evidence/``
+     - Sanitized measured results and raw request observations.
+   * - ``docs/``
+     - Architecture, operations, validation and incident documentation.
+
+Scope and limitations
+---------------------
+
+The validated environment uses Ubuntu 24.04 guests on an x86_64 KVM host. Drift detection covers the explicitly defined managed state. The controller and load balancer are single points of failure; long-lived connections and arbitrary production loads have not been validated. Automatic package or operating-system rollback is not implemented.
+
+VMs, storage and networking are scoped through recorded ownership. Runtime files, SSH keys, generated inventory, VM images and Terraform state are untracked. Preserve ``.runtime/fleet.json`` until teardown completes because it records resource ownership.
+
+AWS infrastructure implementation and validation remain pending. Local commands do not provision cloud resources.
+
+Further documentation
+---------------------
+
+* `Architecture <docs/architecture.rst>`_
+* `Managed-state coverage <docs/managed-state.rst>`_
+* `Maintenance <docs/maintenance.rst>`_
+* `HTTP probing and measurements <docs/probing.rst>`_
+* `Runbook <docs/runbook.rst>`_
+* `Validation <docs/validation.rst>`_
+* `Implementation notes <docs/implementation-notes.rst>`_
