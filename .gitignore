@@ -13,3 +13,13 @@ ansible/inventories/local/hosts.yml
 *.tfplan
 *.tfvars
 !*.example.tfvars
+
+# Local environment and credential files
+.env
+.env.*
+!.env.example
+.aws/
+id_rsa
+id_ed25519
+*.p12
+*.pfx

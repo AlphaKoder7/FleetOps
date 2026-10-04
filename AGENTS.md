@@ -14,3 +14,5 @@ Read FLEETOPS_PLAN.md, AGENTS.md and STATUS.md before resuming. The plan is the 
 - Distinguish portable tests from real VM results. Never invent measurements, costs, incidents or completion. Preserve raw observations and report failures honestly.
 
 - Owner authorized read-only local Docker network names/IPAM conflict checks. Pin the local Unix socket; never inspect containers, credentials or network labels, and never alter existing networks.
+
+- Owner explicitly authorized public GitHub publication to AlphaKoder7/FleetOps using the authenticated GitHub account on 2026-10-05. This overrides the no-publishing rule only for this repository; AWS provisioning and credential use remain forbidden except the authorized GitHub authentication.

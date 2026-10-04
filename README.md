@@ -1,6 +1,6 @@
 # FleetOps
 
-Ansible operations toolkit for a three-VM Ubuntu 24.04 lab: non-root systemd workload, HAProxy, read-only drift detection, targeted repair and health-gated rolling maintenance. [FLEETOPS_PLAN.md](FLEETOPS_PLAN.md) is the specification; [STATUS.md](STATUS.md) records verified completion and remaining checks. Local Phases 0–6 are verified, including scoped teardown/clean rebuild and real-VM integration. AWS provisioning is disabled; Phase 7 preparation/cloud validation remain pending.
+Ansible operations toolkit for a three-VM Ubuntu 24.04 lab: non-root systemd workload, HAProxy, read-only drift detection, targeted repair and health-gated rolling maintenance. [FLEETOPS_PLAN.md](FLEETOPS_PLAN.md) is the specification; [STATUS.md](STATUS.md) records verified completion and remaining checks. **Local validation is complete (Phases 0–6)**, including scoped teardown/clean rebuild, real package upgrades under HTTP probing and real-VM integration. **AWS validation remains pending and provisioning is disabled**; Phase 7 is a separate follow-on.
 
 ## Setup
 
