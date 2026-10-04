@@ -1,0 +1,15 @@
+.venv/
+__pycache__/
+*.py[cod]
+.runtime/
+*.qcow2
+*.img
+*.iso
+*.pem
+*.key
+ansible/inventories/local/hosts.yml
+.terraform/
+*.tfstate*
+*.tfplan
+*.tfvars
+!*.example.tfvars
