@@ -9,7 +9,7 @@ Linux fleet automation with Ansible, Python, systemd and HAProxy.
 
 FleetOps demonstrates how to keep an application serving requests while its servers undergo maintenance, and how to detect and repair configuration drift. It uses three Ubuntu virtual machines: a load balancer and two application servers.
 
-**Local implementation and validation are complete.** AWS deployment remains a future extension.
+The reference environment is a three-node local KVM fleet validated end to end.
 
 Verified results
 ----------------
@@ -35,7 +35,7 @@ Verified results
    * - Automated checks
      - 25 portable tests, formatting, Ansible lint/syntax checks and real-VM integration passed.
 
-These are measured local lab results. Request counts and latency describe the recorded sampling windows, rather than a production availability guarantee. The package-upgrade exercise deliberately stages an older authenticated Ubuntu package version before upgrading it.
+These results were measured on the validated local KVM environment. Request counts and latency describe the recorded sampling windows, rather than a production availability guarantee. The package-upgrade exercise deliberately stages an older authenticated Ubuntu package version before upgrading it.
 
 Raw observations and summaries are available in the `evidence directory <evidence/README.rst>`_.
 
@@ -164,8 +164,6 @@ Repository layout
      - Portable behaviour and evidence-validation tests.
    * - ``infra/local/``
      - Local infrastructure documentation.
-   * - ``infra/aws/``
-     - Pending cloud extension notes.
    * - ``evidence/``
      - Sanitized measured results and raw request observations.
    * - ``docs/``
@@ -178,7 +176,6 @@ The validated environment uses Ubuntu 24.04 guests on an x86_64 KVM host. Drift 
 
 VMs, storage and networking are scoped through recorded ownership. Runtime files, SSH keys, generated inventory, VM images and Terraform state are untracked. Preserve ``.runtime/fleet.json`` until teardown completes because it records resource ownership.
 
-AWS infrastructure implementation and validation remain pending. Local commands do not provision cloud resources.
 
 Further documentation
 ---------------------
