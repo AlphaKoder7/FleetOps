@@ -24,5 +24,3 @@ id_ed25519
 *.p12
 *.pfx
 
-# Keep Markdown planning and agent notes out of the published repository.
-*.md

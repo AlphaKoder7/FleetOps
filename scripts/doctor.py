@@ -164,7 +164,7 @@ def inspect():
             "routes",
             False,
             f"Inspection unavailable: {exc}",
-            "Run make doctor outside the restricted sandbox",
+            "Run make doctor on the host environment",
         )
     code, output, error = command(["ss", "-H", "-ltn"])
     port_ok = code == 0 and not error
@@ -301,7 +301,7 @@ def inspect():
         status="blocked" if any(c["status"] == "blocked" for c in checks) else "ready",
         checks=checks,
         limitations=[
-            "Only local Docker network IPAM is inspected, as authorized; no container or credential data is requested.",
+            "Only local Docker network IPAM is inspected; container and credential data are not requested.",
             "No guests, networks, keys or cloud resources are created by doctor.",
         ],
     )

@@ -11,7 +11,7 @@ Architecture
        LB -->|HAProxy health/routing: 18081| W1
        LB -->|HAProxy health/routing: 18081| W2
 
-Three real QEMU/KVM guests on dedicated fleetops-net NAT, each initially 1 vCPU / 1 GiB / 8 GiB sparse overlay. No GPU passthrough or other workload platform. Network selection checks routes, libvirt ranges and authorized Docker IPAM; generated inventory contains discovered IPs. Guests permit SSH and their service port only from the lab subnet. No public ingress is configured.
+Three real QEMU/KVM guests on dedicated fleetops-net NAT, each initially 1 vCPU / 1 GiB / 8 GiB sparse overlay. No GPU passthrough or other workload platform. Network selection checks routes, libvirt ranges and existing Docker network IPAM; generated inventory contains discovered IPs. Guests permit SSH and their service port only from the lab subnet. No public ingress is configured.
 
 Management key and each guest SSH host key are project-owned and untracked. Cloud-init seeds only the fleetops management user, SSH trust, Python and guest agent. Ansible installs the Linux baseline, application user/code/settings/systemd unit and HAProxy. Candidate settings/configuration validate before atomic replacement; handlers restart/reload only when desired content changes.
 
@@ -21,4 +21,4 @@ Explicit drift observations are separate from role-based repair. Rolling mainten
 
 Storage resides in a dedicated UUID-named FleetOps pool; domain/network/pool UUIDs plus expected disk/network paths are checked against the checkout's manifest. Destruction refuses foreign UUIDs, changed storage paths or unknown volumes. Cache/keys remain in .runtime after resource teardown.
 
-The controller and load balancer are single points of failure. This is an Ubuntu/x86_64 learning lab, with bounded drift coverage and no automatic OS rollback. AWS validation is pending and none of these commands use cloud credentials or provision cloud resources.
+The controller and load balancer are single points of failure. Validation currently covers Ubuntu 24.04 guests on x86_64 KVM, with bounded drift coverage and no automatic OS rollback.
